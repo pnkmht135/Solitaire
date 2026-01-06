@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://da6sdcp2we8lt"]
+
+[ext_resource type="Script" uid="uid://b1i0rukubub4s" path="res://Game elements/card.gd" id="1_46gx8"]
+[ext_resource type="Texture2D" uid="uid://cqiyu1ifc04gw" path="res://Sprites/Cards.png" id="1_kc7o0"]
+
+[node name="Card" type="Node2D"]
+scale = Vector2(2, 2)
+script = ExtResource("1_46gx8")
+suit = 2
+num = 3
+is_hidden = false
+
+[node name="sprite" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(110, 62.5)
+texture = ExtResource("1_kc7o0")
+hframes = 13
+vframes = 5
+frame = 52
