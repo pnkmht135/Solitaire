@@ -1,15 +1,27 @@
-[gd_scene load_steps=3 format=3 uid="uid://1bif2i1rkywb"]
+[gd_scene load_steps=4 format=3 uid="uid://1bif2i1rkywb"]
 
 [ext_resource type="Script" uid="uid://cbu4e3pqwr8g8" path="res://Game elements/tableau.gd" id="1_rsw77"]
 [ext_resource type="Texture2D" uid="uid://cqiyu1ifc04gw" path="res://Sprites/Cards.png" id="2_ovack"]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rsw77"]
+size = Vector2(76, 116)
+
 [node name="Tableau" type="Node2D"]
-position = Vector2(165, 161)
-scale = Vector2(2, 2)
 script = ExtResource("1_rsw77")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(2, 2)
 texture = ExtResource("2_ovack")
 hframes = 13
 vframes = 5
 frame = 53
+
+[node name="Click_Area" type="Area2D" parent="."]
+collision_mask = 0
+
+[node name="Shape" type="CollisionShape2D" parent="Click_Area"]
+shape = SubResource("RectangleShape2D_rsw77")
+
+[connection signal="input_event" from="Click_Area" to="." method="_on_click_area_input_event"]
+[connection signal="mouse_entered" from="Click_Area" to="." method="_on_click_area_mouse_entered"]
+[connection signal="mouse_exited" from="Click_Area" to="." method="_on_click_area_mouse_exited"]

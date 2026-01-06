@@ -21,7 +21,7 @@ func _ready() -> void:
 			card.suit=things
 			card.num=i
 			Deck.append(card)
-			add_child(card)
+			add_child(card) # can comment this out to have cards start in tableuas/other
 			
 	# Shuffle!!
 	Deck.shuffle()
@@ -31,15 +31,15 @@ func _ready() -> void:
 	tableau_1.initiate()
 	tableau_2.cards_stack=Deck.slice(1,3)
 	tableau_2.initiate()
-	tableau_3.cards_stack=Deck.slice(3,7)
+	tableau_3.cards_stack=Deck.slice(3,6)
 	tableau_3.initiate()
-	tableau_4.cards_stack=Deck.slice(7,12)
+	tableau_4.cards_stack=Deck.slice(6,10)
 	tableau_4.initiate()
-	tableau_5.cards_stack=Deck.slice(12,18)
+	tableau_5.cards_stack=Deck.slice(10,15)
 	tableau_5.initiate()
-	tableau_6.cards_stack=Deck.slice(18,25)
+	tableau_6.cards_stack=Deck.slice(15,21)
 	tableau_6.initiate()
-	tableau_7.cards_stack=Deck.slice(25,33)
+	tableau_7.cards_stack=Deck.slice(21,28)
 	tableau_7.initiate()
 
 
