@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://1bif2i1rkywb"]
+
+[ext_resource type="Script" uid="uid://cbu4e3pqwr8g8" path="res://Game elements/tableau.gd" id="1_rsw77"]
+[ext_resource type="Texture2D" uid="uid://cqiyu1ifc04gw" path="res://Sprites/Cards.png" id="2_ovack"]
+
+[node name="Tableau" type="Node2D"]
+position = Vector2(165, 161)
+scale = Vector2(2, 2)
+script = ExtResource("1_rsw77")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_ovack")
+hframes = 13
+vframes = 5
+frame = 53

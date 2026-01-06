@@ -5,7 +5,8 @@ enum Suit {
 	DIAMOND,
 	SPADE,
 	CLOVER,
-	HIDDEN
+	HIDDEN,
+	NONE
 }
 
 var sprite_dict = {
@@ -15,6 +16,6 @@ var sprite_dict = {
 	Suit.CLOVER : 3,
 	Suit.HIDDEN : 4,
 	"hidden_column": 0,
-	"none_row" : 4,
-	"none_columb" : 1
-}
+	Suit.NONE : 4,
+	"none_columm" : 1
+} #TODO: find a way to avoid messy strings!

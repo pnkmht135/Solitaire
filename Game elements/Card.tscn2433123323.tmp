@@ -6,10 +6,12 @@
 [node name="Card" type="Node2D"]
 scale = Vector2(2, 2)
 script = ExtResource("1_46gx8")
+suit = 2
 num = 3
 
 [node name="sprite" type="Sprite2D" parent="."]
 unique_name_in_owner = true
+position = Vector2(110, 62.5)
 texture = ExtResource("1_kc7o0")
 hframes = 13
 vframes = 5

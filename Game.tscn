@@ -1,0 +1,37 @@
+[gd_scene load_steps=4 format=3 uid="uid://eb50e85jkwsx"]
+
+[ext_resource type="Script" uid="uid://ci11tky1alcqy" path="res://game.gd" id="1_xkndl"]
+[ext_resource type="PackedScene" uid="uid://da6sdcp2we8lt" path="res://Game elements/Card.tscn" id="2_u44n3"]
+[ext_resource type="PackedScene" uid="uid://1bif2i1rkywb" path="res://Game elements/Tableau.tscn" id="2_xkndl"]
+
+[node name="Game" type="Node2D"]
+script = ExtResource("1_xkndl")
+CARD = ExtResource("2_u44n3")
+
+[node name="Tableau1" parent="." instance=ExtResource("2_xkndl")]
+unique_name_in_owner = true
+position = Vector2(329, 150)
+
+[node name="Tableau2" parent="." instance=ExtResource("2_xkndl")]
+unique_name_in_owner = true
+position = Vector2(442, 155)
+
+[node name="Tableau3" parent="." instance=ExtResource("2_xkndl")]
+unique_name_in_owner = true
+position = Vector2(557, 157)
+
+[node name="Tableau4" parent="." instance=ExtResource("2_xkndl")]
+unique_name_in_owner = true
+position = Vector2(689, 153)
+
+[node name="Tableau5" parent="." instance=ExtResource("2_xkndl")]
+unique_name_in_owner = true
+position = Vector2(794, 153)
+
+[node name="Tableau6" parent="." instance=ExtResource("2_xkndl")]
+unique_name_in_owner = true
+position = Vector2(898, 156)
+
+[node name="Tableau7" parent="." instance=ExtResource("2_xkndl")]
+unique_name_in_owner = true
+position = Vector2(1006, 155)
