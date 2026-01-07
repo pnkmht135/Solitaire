@@ -29,8 +29,8 @@ Click={
 
 [layer_names]
 
-2d_physics/layer_1="Click"
-2d_physics/layer_2="Card Placement"
+2d_physics/layer_1="Card"
+2d_physics/layer_2="Tabluea"
 
 [rendering]
 

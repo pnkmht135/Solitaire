@@ -1,7 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://da6sdcp2we8lt"]
+[gd_scene load_steps=4 format=3 uid="uid://da6sdcp2we8lt"]
 
 [ext_resource type="Script" uid="uid://b1i0rukubub4s" path="res://Game elements/card.gd" id="1_46gx8"]
 [ext_resource type="Texture2D" uid="uid://cqiyu1ifc04gw" path="res://Sprites/Cards.png" id="1_kc7o0"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_46gx8"]
+size = Vector2(40, 60)
 
 [node name="Card" type="Node2D"]
 scale = Vector2(2, 2)
@@ -14,3 +17,11 @@ texture = ExtResource("1_kc7o0")
 hframes = 13
 vframes = 5
 frame = 52
+
+[node name="Hit_Box" type="Area2D" parent="."]
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hit_Box"]
+scale = Vector2(0.75, 0.75)
+shape = SubResource("RectangleShape2D_46gx8")
+debug_color = Color(0.700522, 0.482594, 0.268586, 0.42)

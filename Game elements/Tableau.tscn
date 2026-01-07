@@ -17,11 +17,13 @@ vframes = 5
 frame = 53
 
 [node name="Click_Area" type="Area2D" parent="."]
-collision_mask = 0
+collision_layer = 2
 
 [node name="Shape" type="CollisionShape2D" parent="Click_Area"]
 shape = SubResource("RectangleShape2D_rsw77")
 
+[connection signal="area_entered" from="Click_Area" to="." method="_on_click_area_area_entered"]
+[connection signal="area_exited" from="Click_Area" to="." method="_on_click_area_area_exited"]
 [connection signal="input_event" from="Click_Area" to="." method="_on_click_area_input_event"]
 [connection signal="mouse_entered" from="Click_Area" to="." method="_on_click_area_mouse_entered"]
 [connection signal="mouse_exited" from="Click_Area" to="." method="_on_click_area_mouse_exited"]

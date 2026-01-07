@@ -9,10 +9,9 @@ extends Node2D
 @export var suit : Global.Suit = Global.Suit.HIDDEN
 @export_range(0,12) var num : int = 1
 @export var is_hidden : bool = true
-# TODO: make a custom date type for a card consisting of both sprite and num
-# should have num restricted to 1-13/0-12 (mod 13 shit fr fr)
-@onready var animation_player: AnimationPlayer = $AnimationPlayer
 
+# TODO: add card hitbod that is disabled by default, enabled when in hand.
+# TODO: have the index of the card in its parent saved in card itself.
 func flip_card()->void:
 	# Change cards suit and num for consistancys
 	var new_frame=Vector2i(num,suit)
@@ -23,29 +22,23 @@ func flip_card()->void:
 		is_hidden=false
 	var tween = create_tween()
 	tween.set_ease(Tween.EASE_IN_OUT)
-	tween.tween_property(sprite, "scale:x", 0, 0.25)
+	tween.tween_property(sprite, "scale:x", 0, 0.5)
 	tween.tween_property(sprite, "frame_coords", new_frame,0)
-	tween.tween_property(sprite, "scale:x", 1,0.25)
-	# TODO: how to clear tween idk
+	tween.tween_property(sprite, "scale:x", 1,0.5)
 	
 
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	#if not(is_hidden):
-		#flip_card(num,suit)
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
+# TODO: make more efficient so that process only active when in hand, use set_process(false)
 func _process(delta: float) -> void:
 	if in_hand:
 		global_position=get_global_mouse_position()
 		if Input.is_action_just_released("Click"):
-			print("Dropped card")
+			#print("Dropped card")
 			var tween_drop = create_tween()
 			tween_drop.set_ease(Tween.EASE_IN_OUT)
-			print("Sending back")
+			#print("Sending back")
 			tween_drop.tween_property($".","global_position",current_position,0.5)
-			print("Back")
+			#print("Back")
 			in_hand=false
+			#await in_hand==false
+			set_process(false)
 			

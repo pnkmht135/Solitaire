@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://c0nfdi34vpoh8"]
+
+[ext_resource type="Script" uid="uid://dbifd0cx43uht" path="res://Game elements/stockpile.gd" id="1_e811g"]
+[ext_resource type="Texture2D" uid="uid://cqiyu1ifc04gw" path="res://Sprites/Cards.png" id="2_qa6s2"]
+
+[node name="Stockpiile" type="Node2D"]
+script = ExtResource("1_e811g")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(2, 2)
+texture = ExtResource("2_qa6s2")
+hframes = 13
+vframes = 5
+frame = 53
