@@ -3,7 +3,8 @@ extends Node2D
 
 @onready var sprite: Sprite2D = %sprite
 @onready var sprite_dict: Dictionary = Global.sprite_dict
-#@onready var parent: Node2D = null # is it in the stockpile or tableau or a pile
+@onready var parent: Table_Element = null # is it in the stockpile or tableau or a pile
+@onready var index: int = 0
 @onready var in_hand: bool = false 
 @onready var current_position: Vector2 = Vector2(0,0)
 @export var suit : Global.Suit = Global.Suit.HIDDEN
@@ -26,6 +27,12 @@ func flip_card()->void:
 	tween.tween_property(sprite, "frame_coords", new_frame,0)
 	tween.tween_property(sprite, "scale:x", 1,0.5)
 	
+func move_to(new_parent:Table_Element):
+	if parent:
+		parent.remove_card(self,index) 
+	new_parent.add_card(self)
+	#reparent(new_parent) 
+	parent=new_parent
 
 # TODO: make more efficient so that process only active when in hand, use set_process(false)
 func _process(delta: float) -> void:

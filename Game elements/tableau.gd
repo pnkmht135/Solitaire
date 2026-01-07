@@ -22,7 +22,8 @@ func initiate(cards:Array[Card]) -> void:
 		var current_offset= 0
 		num_cards=len(cards_stack)
 		for card in cards_stack:
-			card.reparent(self) 
+			card.reparent(self)
+			card.parent=self
 			var tween = create_tween()
 			tween.set_ease(Tween.EASE_IN_OUT)
 			tween.tween_property(card,"position",Vector2(0,current_offset),1)
@@ -37,7 +38,7 @@ func initiate(cards:Array[Card]) -> void:
 func _process(delta: float) -> void:
 	if card_to_add != null:
 		if Input.is_action_just_released("Click"):
-			add_card(card_to_add)
+			card_to_add.move_to(self)
 
 func _on_click_area_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
 	if event.is_action_pressed("Click"):
@@ -49,13 +50,10 @@ func _on_click_area_input_event(viewport: Node, event: InputEvent, shape_idx: in
 
 func add_card(card: Card):
 	card.in_hand=false
-	# TODO: remove card from previous tablueas cardstack
 	card.reparent(self)
 	card.position=Vector2(0,offset*num_cards)
 	num_cards+=1
 	cards_stack.append(card)
-	card.flip_card()
-	card.flip_card()
 
 func remove_card(card:Card,index:int)->void:
 	print("removing card?")
@@ -64,7 +62,11 @@ func remove_card(card:Card,index:int)->void:
 		return
 	if card!=cards_stack[-1]:
 		push_error("Can only remove card from the end of Tabluea for now.")
-
+	cards_stack.erase(card)
+	num_cards-=1
+	if cards_stack[-1].is_hidden:
+		cards_stack[-1].flip_card()
+	
 func _on_click_area_area_entered(area: Area2D) -> void:
 	# when a card hitbox enteres tablue click area
 	if self.is_ancestor_of(area):
