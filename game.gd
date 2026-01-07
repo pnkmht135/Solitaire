@@ -18,6 +18,7 @@ func _ready() -> void:
 	# Generate deck of cards
 	var suits: Array[Global.Suit] =[Global.Suit.HEART,Global.Suit.DIAMOND,Global.Suit.SPADE,Global.Suit.CLOVER]
 	for things in suits:
+		print(things,Global.Suit.find_key(things))
 		for i in range(0,12):
 			var card= CARD.instantiate()
 			card.suit=things

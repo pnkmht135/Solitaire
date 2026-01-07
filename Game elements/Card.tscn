@@ -19,7 +19,7 @@ vframes = 5
 frame = 52
 
 [node name="Hit_Box" type="Area2D" parent="."]
-collision_mask = 0
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hit_Box"]
 scale = Vector2(0.75, 0.75)

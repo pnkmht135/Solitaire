@@ -1,5 +1,5 @@
 class_name Table_Element
-extends Node
+extends Node2D
 
 @onready var num_cards : int = 0
 @onready var cards_stack : Array[Card] = []

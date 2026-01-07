@@ -2,8 +2,8 @@ extends Node
 
 enum Suit {
 	HEART,
-	DIAMOND,
 	SPADE,
+	DIAMOND,
 	CLOVER,
 	HIDDEN,
 	NONE
