@@ -6,13 +6,16 @@ extends Node2D
 @onready var parent: Table_Element = null # is it in the stockpile or tableau or a pile
 @onready var index: int = 0
 @onready var in_hand: bool = false 
-@onready var current_position: Vector2
+@onready var current_position: Vector2 = Vector2(0,0)
 @export var suit : Global.Suit = Global.Suit.HIDDEN
 @export_range(0,12) var num : int = 1
 @export var is_hidden : bool = true
 # TODO: let non-hidden cards in a Tabluea have children.
-# TODO: add card hitbod that is disabled by default, enabled when in hand.
-# TODO: have the index of the card in its parent saved in card itself.
+# TODO: add change card hitbox to be the one that activates in-hand
+# TODO: hitbox deactivated when hidden
+# TODO: have the index of the card in its parent saved in card itself?
+# TODO: recreate + fix bug of card sliding far forward when stacking tabluea
+
 func _ready() -> void:
 	set_process(false)
 
@@ -37,23 +40,33 @@ func move_to(new_parent:Table_Element)->void:
 	#reparent(new_parent) 
 	parent=new_parent
 
+func make_clickbox_stacksized():
+	$Click_Box.scale.y = 0.2
+	$Click_Box.position.y=-24
+	
+func reset_clickbox():
+	$Click_Box.scale.y = 1
+	$Click_Box.position.y=0	
+
 func return_to_place()->void:
-	if not(current_position):
-		push_error("Tried to return a card without a set current place")
-		return
 	var tween_drop = create_tween()
 	tween_drop.set_ease(Tween.EASE_IN_OUT)
 	#TODO: double check if global or local needed here 
-	tween_drop.tween_property($".","global_position",current_position,0.5)
-	
+	tween_drop.tween_property($".","position",current_position,0.5)
 
 func _process(delta: float) -> void:
-	if in_hand: # TODO: fix buc where Drop card logic overrides addcard logic.
+	if in_hand:
 		global_position=get_global_mouse_position()
 		if Input.is_action_just_released("Click"):
 			# TODO: Make this if statement cleaner
-			if not($Hit_Box.has_overlapping_areas()) or $Hit_Box.overlaps_area(parent.get_node_or_null("Click_Area")):
+			if not($Click_Box.has_overlapping_areas()) or $Click_Box.overlaps_area(parent.get_node_or_null("Area")):
 				return_to_place()
 			in_hand=false
 			set_process(false)
-			
+func _on_click_box_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
+	if event.is_action_pressed("Click") and not(is_hidden):
+		in_hand=true
+		if parent:
+			parent.move_to_front()
+			#print(parent.name,current_position)
+		set_process(true)

@@ -18,10 +18,11 @@ hframes = 13
 vframes = 5
 frame = 52
 
-[node name="Hit_Box" type="Area2D" parent="."]
+[node name="Click_Box" type="Area2D" parent="."]
 collision_mask = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hit_Box"]
-scale = Vector2(0.75, 0.75)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Click_Box"]
 shape = SubResource("RectangleShape2D_46gx8")
 debug_color = Color(0.700522, 0.482594, 0.268586, 0.42)
+
+[connection signal="input_event" from="Click_Box" to="." method="_on_click_box_input_event"]

@@ -1,6 +1,5 @@
 extends Node2D
 
-#const CARD = preload("res://Game elements/Card.tscn")
 @export var CARD: PackedScene
 @onready var tableau_1: Tableau = %Tableau1
 @onready var tableau_2: Tableau = %Tableau2
@@ -16,9 +15,10 @@ var Deck : Array[Card]
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	# Generate deck of cards
+	# TODO: lookinto this ysort stuff:
+	#y_sort_enabled=true
 	var suits: Array[Global.Suit] =[Global.Suit.HEART,Global.Suit.DIAMOND,Global.Suit.SPADE,Global.Suit.CLOVER]
 	for things in suits:
-		print(things,Global.Suit.find_key(things))
 		for i in range(0,12):
 			var card= CARD.instantiate()
 			card.suit=things

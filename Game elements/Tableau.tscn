@@ -16,15 +16,15 @@ hframes = 13
 vframes = 5
 frame = 53
 
-[node name="Click_Area" type="Area2D" parent="."]
+[node name="Area" type="Area2D" parent="."]
 scale = Vector2(0.75, 0.75)
 collision_layer = 2
 
-[node name="Shape" type="CollisionShape2D" parent="Click_Area"]
+[node name="Shape" type="CollisionShape2D" parent="Area"]
 shape = SubResource("RectangleShape2D_rsw77")
 
-[connection signal="area_entered" from="Click_Area" to="." method="_on_click_area_area_entered"]
-[connection signal="area_exited" from="Click_Area" to="." method="_on_click_area_area_exited"]
-[connection signal="input_event" from="Click_Area" to="." method="_on_click_area_input_event"]
-[connection signal="mouse_entered" from="Click_Area" to="." method="_on_click_area_mouse_entered"]
-[connection signal="mouse_exited" from="Click_Area" to="." method="_on_click_area_mouse_exited"]
+[connection signal="area_entered" from="Area" to="." method="_on_click_area_area_entered"]
+[connection signal="area_exited" from="Area" to="." method="_on_click_area_area_exited"]
+[connection signal="input_event" from="Area" to="." method="_on_click_area_input_event"]
+[connection signal="mouse_entered" from="Area" to="." method="_on_click_area_mouse_entered"]
+[connection signal="mouse_exited" from="Area" to="." method="_on_click_area_mouse_exited"]
