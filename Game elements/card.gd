@@ -10,12 +10,10 @@ extends Node2D
 @export var suit : Global.Suit = Global.Suit.HIDDEN
 @export_range(0,12) var num : int = 1
 @export var is_hidden : bool = true
-# TODO: let non-hidden cards in a Tabluea have children.
-# TODO: add change card hitbox to be the one that activates in-hand
 # TODO: hitbox deactivated when hidden
 # TODO: have the index of the card in its parent saved in card itself?
 # TODO: recreate + fix bug of card sliding far forward when stacking tabluea
-
+# TODO: maybe switch to global position for return card to avoid headaches
 func _ready() -> void:
 	set_process(false)
 
@@ -25,8 +23,14 @@ func flip_card()->void:
 	if not(is_hidden):
 		new_frame=Vector2i(sprite_dict["hidden_column"],sprite_dict[Global.Suit.HIDDEN])
 		is_hidden=true
+		$Click_Box/CollisionShape2D.disabled=true
+		$Click_Box.monitorable=false
+		$Click_Box.monitoring=false
 	else:
 		is_hidden=false
+		$Click_Box/CollisionShape2D.disabled=false
+		$Click_Box.monitorable=true
+		$Click_Box.monitoring=true
 	var tween = create_tween()
 	tween.set_ease(Tween.EASE_IN_OUT)
 	tween.tween_property(sprite, "scale:x", 0, 0.5)
@@ -52,17 +56,23 @@ func return_to_place()->void:
 	var tween_drop = create_tween()
 	tween_drop.set_ease(Tween.EASE_IN_OUT)
 	#TODO: double check if global or local needed here 
+	print("moving to ",current_position)
 	tween_drop.tween_property($".","position",current_position,0.5)
+	print("returned ",num," to ",self.get_parent(),parent)
+	# TODO: fix issue with parent but not .get_parant() being set
 
 func _process(delta: float) -> void:
-	if in_hand:
+	if in_hand: #TODO: i think this+set process being incorrectly handled. see: next to next todo
 		global_position=get_global_mouse_position()
 		if Input.is_action_just_released("Click"):
-			# TODO: Make this if statement cleaner
-			if not($Click_Box.has_overlapping_areas()) or $Click_Box.overlaps_area(parent.get_node_or_null("Area")):
-				return_to_place()
 			in_hand=false
 			set_process(false)
+			# TODO: Make this if statements cleaner
+			if not($Click_Box.has_overlapping_areas()) or $Click_Box.overlaps_area(parent.get_node_or_null("Area")):
+				return_to_place()
+				#TODO: fix: it sometimes gets called before current position gets 
+				# updated but after its parent becomes another card
+			
 func _on_click_box_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
 	if event.is_action_pressed("Click") and not(is_hidden):
 		in_hand=true

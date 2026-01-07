@@ -19,7 +19,7 @@ func _ready() -> void:
 	#y_sort_enabled=true
 	var suits: Array[Global.Suit] =[Global.Suit.HEART,Global.Suit.DIAMOND,Global.Suit.SPADE,Global.Suit.CLOVER]
 	for things in suits:
-		for i in range(0,12):
+		for i in range(0,13):
 			var card= CARD.instantiate()
 			card.suit=things
 			card.num=i

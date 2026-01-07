@@ -20,9 +20,12 @@ frame = 52
 
 [node name="Click_Box" type="Area2D" parent="."]
 collision_mask = 2
+monitoring = false
+monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Click_Box"]
 shape = SubResource("RectangleShape2D_46gx8")
+disabled = true
 debug_color = Color(0.700522, 0.482594, 0.268586, 0.42)
 
 [connection signal="input_event" from="Click_Box" to="." method="_on_click_box_input_event"]
