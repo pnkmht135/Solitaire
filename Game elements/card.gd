@@ -10,10 +10,10 @@ extends Node2D
 @export var suit : Global.Suit = Global.Suit.HIDDEN
 @export_range(0,12) var num : int = 1
 @export var is_hidden : bool = true
-# TODO: hitbox deactivated when hidden
 # TODO: have the index of the card in its parent saved in card itself?
 # TODO: recreate + fix bug of card sliding far forward when stacking tabluea
 # TODO: maybe switch to global position for return card to avoid headaches
+# TODO: mayb use a state machine for cards.
 func _ready() -> void:
 	set_process(false)
 

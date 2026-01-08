@@ -51,9 +51,15 @@ func _process(delta: float) -> void:
 			card_to_add.return_to_place()
 			set_process(false)
 
+#TODO: bug when you contiuously move a card between 2 tablueas:
+# Area keeps moving upwards i think num_cards mauy also be affected.
+
 func add_card(card: Card):
+	#TODO: properly handle cases of adding stack of crads for moving area
+	#TODO: handle open card spacing when moving area
 	card.in_hand=false
 	#card.reparent(self)
+	
 	#card.position=Vector2(0,offset*num_cards)
 	if num_cards>0:
 		var topcard= cards_stack[-1]
@@ -64,14 +70,18 @@ func add_card(card: Card):
 		#card.parent=topcard #TODO: whoops, how do I do this? Or better not to do it...
 		card.position=Vector2(0,offset)
 		card.current_position=card.position
-	else:
+	elif num_cards==0:
+		print("Empty stack!!")
 		card.reparent(self)
 		card.position=Vector2(0,0)
-		card.current_position=position
-	num_cards+=1
+		card.current_position=card.position
+	num_cards+=len(card.get_children())
 	cards_stack.append(card)
+	for child in card.get_children():
+		cards_stack.append(child)
 
 func remove_card(card:Card,index:int)->void:
+	#TODO: Bug where tabluea area being sent too high/back
 	if cards_stack.is_empty():
 		push_error("Cannot remove card from an empty Tabluea: ",self.name)
 		return
@@ -89,11 +99,12 @@ func remove_card(card:Card,index:int)->void:
 		num_cards=0
 		area.position=Vector2(0,0)
 	else:
-		area.position=Vector2(0,offset*(num_cards-1))
-
+		area.position=Vector2(0,offset*(num_cards)) #TODO: -1?
 	if not(cards_stack.is_empty()):
 		var topcard = cards_stack[-1]
 		if topcard.is_hidden:
+			#TODO: sometimes not being called
+			print("Card revealed.")
 			cards_stack[-1].flip_card()
 			return
 		topcard.reset_clickbox()
