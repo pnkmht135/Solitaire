@@ -19,6 +19,7 @@ func initiate(cards:Array[Card]) -> void:
 		current_index=-1
 		var current_offset= 0
 		num_cards=len(cards_stack)
+		#print(self.name,num_cards)
 		for card in cards_stack:
 			card.reparent(self)
 			card.parent=self
@@ -34,7 +35,7 @@ func initiate(cards:Array[Card]) -> void:
 		area.move_to_front()
 		cards_stack[-1].flip_card() 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	# TODO: manage this nesting!!!
 	if card_to_add != null:
 		if Input.is_action_just_released("Click"):
@@ -59,9 +60,10 @@ func add_card(card: Card):
 	#TODO: handle open card spacing when moving area
 	card.in_hand=false
 	#card.reparent(self)
-	
 	#card.position=Vector2(0,offset*num_cards)
+	print(card.num," adding, stack has ",num_cards)
 	if num_cards>0:
+		print("adding to a non-empty stack")
 		var topcard= cards_stack[-1]
 		area.position=Vector2(0,offset*num_cards)
 		topcard.make_clickbox_stacksized()
@@ -75,9 +77,9 @@ func add_card(card: Card):
 		card.reparent(self)
 		card.position=Vector2(0,0)
 		card.current_position=card.position
-	num_cards+=len(card.get_children())
+	num_cards+=len(card.get_children().filter(func(n):return n is Card))+1
 	cards_stack.append(card)
-	for child in card.get_children():
+	for child in card.get_children().filter(func(n):return n is Card):
 		cards_stack.append(child)
 
 func remove_card(card:Card,index:int)->void:
@@ -89,7 +91,8 @@ func remove_card(card:Card,index:int)->void:
 		## TODO:this is confusing me, not pushing or printing error??
 		#print("Can only remove card from the end of Tabluea")
 		#push_error("Can only remove card from the end of Tabluea for now.")
-	var remove_stack=card.get_children()
+	var remove_stack=card.get_children().filter(func(n):return n is Card)
+	print(len(remove_stack)," number of children")
 	cards_stack.erase(card)
 	num_cards-=1
 	for child in remove_stack:
@@ -99,9 +102,10 @@ func remove_card(card:Card,index:int)->void:
 		num_cards=0
 		area.position=Vector2(0,0)
 	else:
-		area.position=Vector2(0,offset*(num_cards)) #TODO: -1?
+		area.position=Vector2(0,offset*(num_cards-1)) #TODO: -1 or not?
 	if not(cards_stack.is_empty()):
 		var topcard = cards_stack[-1]
+		print(topcard.num," Is revealed? ",topcard.is_hidden) #TODO:sometimes not flipped whn should
 		if topcard.is_hidden:
 			#TODO: sometimes not being called
 			print("Card revealed.")
@@ -117,7 +121,7 @@ func _on_click_area_area_entered(card_area: Area2D) -> void:
 	card_to_add = card_area.get_parent()
 	set_process(true)
 
-func _on_click_area_area_exited(card_area: Area2D) -> void:
+func _on_click_area_area_exited(_card_area: Area2D) -> void:
 	# might need if statement
 	card_to_add = null
 	set_process(false)

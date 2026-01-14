@@ -38,7 +38,3 @@ func _ready() -> void:
 	tableau_6.initiate(Deck.slice(15,21))
 	tableau_7.initiate(Deck.slice(21,28))
 	stockpile.initiate(Deck.slice(28,53))
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta: float) -> void:
-	#pass

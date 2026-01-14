@@ -13,29 +13,35 @@ extends Node2D
 # TODO: have the index of the card in its parent saved in card itself?
 # TODO: recreate + fix bug of card sliding far forward when stacking tabluea
 # TODO: maybe switch to global position for return card to avoid headaches
-# TODO: mayb use a state machine for cards.
+# TODO: maybe use a state machine for cards.
 func _ready() -> void:
 	set_process(false)
 
 func flip_card()->void:
-	# Change cards suit and num for consistancys
+	# Change cards suit and num for consistancy
 	var new_frame=Vector2i(num,sprite_dict.find_key(suit))
 	if not(is_hidden):
 		new_frame=Vector2i(sprite_dict["hidden_column"],sprite_dict[Global.Suit.HIDDEN])
 		is_hidden=true
-		$Click_Box/CollisionShape2D.disabled=true
-		$Click_Box.monitorable=false
-		$Click_Box.monitoring=false
+		disable()
 	else:
 		is_hidden=false
-		$Click_Box/CollisionShape2D.disabled=false
-		$Click_Box.monitorable=true
-		$Click_Box.monitoring=true
+		enable() #TODO: might be a problem for stockpile
 	var tween = create_tween()
 	tween.set_ease(Tween.EASE_IN_OUT)
 	tween.tween_property(sprite, "scale:x", 0, 0.5)
 	tween.tween_property(sprite, "frame_coords", new_frame,0)
 	tween.tween_property(sprite, "scale:x", 1,0.5)
+
+func enable()->void:
+	$Click_Box/CollisionShape2D.disabled=false
+	$Click_Box.monitorable=true
+	$Click_Box.monitoring=true
+	
+func disable()->void:
+	$Click_Box/CollisionShape2D.disabled=true
+	$Click_Box.monitorable=false
+	$Click_Box.monitoring=false	
 	
 func move_to(new_parent:Table_Element)->void:
 	if parent:
