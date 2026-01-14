@@ -27,6 +27,22 @@ func initiate(cards : Array[Card]) -> void:
 		cards_stack.reverse() # because it is facedown on table.
 		click_opened.move_to_front()
 
+func remove_card(card,index)->void:
+	#TODO: not really using index param here. Remove if possible
+	if current_index==-1:
+		push_error("Cannot remove from a closed/empty stockpile.")
+		return
+	if card!=cards_stack[current_index]:
+		push_error("You can only remove the topmost open card from the stockpile.")
+		return
+	# Remove card in question
+	cards_stack.erase(card)
+	current_index-=1
+	num_cards-=1
+	# Enable the next topmost open card
+	if current_index>-1:
+		cards_stack[current_index].enable()
+
 func _on_click_closed_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if event.is_action_pressed("Click"):
 		# Do nothing if no cards
@@ -37,6 +53,7 @@ func _on_click_closed_input_event(_viewport: Node, event: InputEvent, _shape_idx
 			cards_stack[current_index].disable() # TODO: moove opened cards back to 0,0!
 			# Move them to (0,0)
 			for card in cards_stack.slice(max(0,current_index-2),current_index+1):
+				card.current_position=Vector2(0,0)
 				var tween = create_tween()
 				tween.set_ease(Tween.EASE_IN_OUT)
 				tween.tween_property(card,"position",Vector2(0,0),0.5)

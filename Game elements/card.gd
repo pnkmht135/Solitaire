@@ -75,7 +75,7 @@ func _process(delta: float) -> void:
 			in_hand=false
 			set_process(false)
 			# TODO: Make this if statements cleaner
-			# TODO: Error: make sure parent is set!!
+			# TODO: gives non-fatal error: Parameter "p_area" is null. though null is intended
 			var parent_area : Area2D = null
 			if parent:
 				parent_area=parent.get_node_or_null("Area")
