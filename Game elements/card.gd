@@ -1,15 +1,16 @@
 class_name Card
 extends Node2D
 
+# Note: card Clickbox disabled on default.
 @onready var sprite: Sprite2D = %sprite
 @onready var sprite_dict: Dictionary = Global.sprite_dict
 @onready var parent: Table_Element = null # is it in the stockpile or tableau or a pile
 @onready var index: int = 0
 @onready var in_hand: bool = false 
 @onready var current_position: Vector2 = Vector2(0,0)
-@export var suit : Global.Suit = Global.Suit.HIDDEN
+var suit : Global.Suit = Global.Suit.HIDDEN
 @export_range(0,12) var num : int = 1
-@export var is_hidden : bool = true
+var is_hidden : bool = true
 # TODO: have the index of the card in its parent saved in card itself?
 # TODO: recreate + fix bug of card sliding far forward when stacking tabluea
 # TODO: maybe switch to global position for return card to avoid headaches
@@ -75,7 +76,10 @@ func _process(delta: float) -> void:
 			set_process(false)
 			# TODO: Make this if statements cleaner
 			# TODO: Error: make sure parent is set!!
-			if not($Click_Box.has_overlapping_areas()) or $Click_Box.overlaps_area(parent.get_node_or_null("Area")):
+			var parent_area : Area2D = null
+			if parent:
+				parent_area=parent.get_node_or_null("Area")
+			if not($Click_Box.has_overlapping_areas()) or $Click_Box.overlaps_area(parent_area):
 				return_to_place()
 				#TODO: fix: it sometimes gets called before current position gets 
 				# updated but after its parent becomes another card
