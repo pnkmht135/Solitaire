@@ -21,6 +21,8 @@ func initiate(cards : Array[Card]) -> void:
 			tween.set_ease(Tween.EASE_IN_OUT)
 			tween.tween_property(card,"position",Vector2(0,0),1)
 			card.current_position=position
+		cards_stack.reverse() # because it is facedown on table.
+		click_opened.move_to_front()
 
 func _on_click_closed_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if event.is_action_pressed("Click"):
@@ -46,7 +48,7 @@ func _on_click_closed_input_event(_viewport: Node, event: InputEvent, _shape_idx
 			new_index=num_cards-1
 		#TODO: insert func to make all currently open cards fall in line
 		var revealed: Array[Card] = cards_stack.slice(current_index+1,new_index+1)
-		revealed.reverse() # Ensure topmost closed element -> bottommost opened
+		#revealed.reverse() # Ensure topmost closed element -> bottommost opened
 		var shift = Vector2(0,0)
 		#TODO: Make sure topmost element in array->bottom most in opened
 		for card in revealed:
@@ -55,7 +57,7 @@ func _on_click_closed_input_event(_viewport: Node, event: InputEvent, _shape_idx
 			tween.set_ease(Tween.EASE_IN_OUT)
 			tween.tween_property(card,"position",shift,1)
 			shift+=open_offset
-			card.move_to_front() # Is this doing anything?
-			card.flip_card()
+			#card.move_to_front()
+			card.flip_card() # comment out for testing things
 			card.disable()
 		current_index=new_index

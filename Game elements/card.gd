@@ -74,6 +74,7 @@ func _process(delta: float) -> void:
 			in_hand=false
 			set_process(false)
 			# TODO: Make this if statements cleaner
+			# TODO: Error: make sure parent is set!!
 			if not($Click_Box.has_overlapping_areas()) or $Click_Box.overlaps_area(parent.get_node_or_null("Area")):
 				return_to_place()
 				#TODO: fix: it sometimes gets called before current position gets 
