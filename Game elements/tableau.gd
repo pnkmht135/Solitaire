@@ -9,6 +9,8 @@ extends Table_Element
 @onready var offset : int = 10
 @onready var card_to_add : Card = null
 
+# TODO: error persists with remove card, where next does not flip 
+
 func _ready() -> void:
 	set_process(false)
 
@@ -52,65 +54,64 @@ func _process(_delta: float) -> void:
 			card_to_add.return_to_place()
 			set_process(false)
 
-#TODO: bug when you contiuously move a card between 2 tablueas:
-# Area keeps moving upwards i think num_cards mauy also be affected.
-
+# TODO: get_children does not get child  of child? Fix with custom func.
 func add_card(card: Card):
 	#TODO: properly handle cases of adding stack of crads for moving area
 	#TODO: handle open card spacing when moving area
 	card.in_hand=false
-	#card.reparent(self)
-	#card.position=Vector2(0,offset*num_cards)
-	print(card.num," adding, stack has ",num_cards)
 	if num_cards>0:
-		print("adding to a non-empty stack")
+		#print("adding to a non-empty stack")
 		var topcard= cards_stack[-1]
-		area.position=Vector2(0,offset*num_cards)
+		area.position=Vector2(0,offset*(num_cards+len(card.children)))
 		topcard.make_clickbox_stacksized()
 		card.reparent(topcard)
-		#card.parent=self
-		#card.parent=topcard #TODO: whoops, how do I do this? Or better not to do it...
+		topcard.children.append(card)
+		topcard.children.append_array(card.children) # TODO: check if this works like python
 		card.position=Vector2(0,offset)
 		card.current_position=card.position
 	elif num_cards==0:
-		print("Empty stack!!")
+		#print("Empty stack!!")
 		card.reparent(self)
 		card.position=Vector2(0,0)
 		card.current_position=card.position
-	num_cards+=len(card.get_children().filter(func(n):return n is Card))+1
+		#TODO: handle area.pos outside of if and elif?
+		area.position=Vector2(0,offset*(len(card.children)))
+	card.parent=self
 	cards_stack.append(card)
-	for child in card.get_children().filter(func(n):return n is Card):
+	num_cards+=len(card.children)+1 # +1 to include card itself
+	for child in card.children:
 		cards_stack.append(child)
+		child.parent=self
+		
 
 func remove_card(card:Card,index:int)->void:
 	#TODO: Bug where tabluea area being sent too high/back
 	if cards_stack.is_empty():
 		push_error("Cannot remove card from an empty Tabluea: ",self.name)
 		return
-	#if card!=cards_stack[-1]:
-		## TODO:this is confusing me, not pushing or printing error??
-		#print("Can only remove card from the end of Tabluea")
-		#push_error("Can only remove card from the end of Tabluea for now.")
-	var remove_stack=card.get_children().filter(func(n):return n is Card)
-	print(len(remove_stack)," number of children")
+	#print(len(remove_stack)," number of children")
 	cards_stack.erase(card)
 	num_cards-=1
-	for child in remove_stack:
-		cards_stack.erase(card)
+	for child in card.children:
+		cards_stack.erase(child) 
+		print("removed: ",child.num)
 		num_cards-=1		
-	if num_cards<0:
+	if num_cards<=0:
 		num_cards=0
 		area.position=Vector2(0,0)
 	else:
-		area.position=Vector2(0,offset*(num_cards-1)) #TODO: -1 or not?
+		area.position=Vector2(0,offset*(num_cards-1)) 
 	if not(cards_stack.is_empty()):
-		var topcard = cards_stack[-1]
+		var topcard = cards_stack[-1]  # is sometimes reading from the wrong card. Removal issue
 		print(topcard.num," Is revealed? ",topcard.is_hidden) #TODO:sometimes not flipped whn should
 		if topcard.is_hidden:
 			#TODO: sometimes not being called
 			print("Card revealed.")
 			cards_stack[-1].flip_card()
 			return
+		# TODO: incorperate this loop into the prev children loop
+		for child in card.children:
+			topcard.children.erase(child)
 		topcard.reset_clickbox()
 # TODO: change func names to reflect click area rename to area
 func _on_click_area_area_entered(card_area: Area2D) -> void:

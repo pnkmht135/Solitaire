@@ -10,6 +10,8 @@ extends Table_Element
 var open_offset = Vector2(15,0)
 var step = 3 # TODO: maybe make this non-hardcoded?
 
+# TODO: spam clicking causes visual bug where open cards dont go to (0,0) 
+
 func initiate(cards : Array[Card]) -> void:
 	current_index=-1 # No cards open currently
 	if not cards.is_empty():

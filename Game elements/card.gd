@@ -4,18 +4,20 @@ extends Node2D
 # Note: card Clickbox disabled on default.
 @onready var sprite: Sprite2D = %sprite
 @onready var sprite_dict: Dictionary = Global.sprite_dict
-@onready var parent: Table_Element = null # is it in the stockpile or tableau or a pile
-@onready var index: int = 0
-@onready var in_hand: bool = false 
-@onready var current_position: Vector2 = Vector2(0,0)
+var parent: Table_Element = null # is it in the stockpile or tableau or a pile
+var index: int = 0
+var in_hand: bool = false 
+var current_position: Vector2 = Vector2(0,0)
 var suit : Global.Suit = Global.Suit.HIDDEN
 @export_range(0,12) var num : int = 1
 var is_hidden : bool = true
+var children: Array[Card] = []
 # TODO: have the index of the card in its parent saved in card itself?
 # TODO: recreate + fix bug of card sliding far forward when stacking tabluea
 # TODO: maybe switch to global position for return card to avoid headaches
 # TODO: maybe use a state machine for cards.
 func _ready() -> void:
+	is_hidden=true
 	set_process(false)
 
 func flip_card()->void:
@@ -63,9 +65,9 @@ func return_to_place()->void:
 	var tween_drop = create_tween()
 	tween_drop.set_ease(Tween.EASE_IN_OUT)
 	#TODO: double check if global or local needed here 
-	print("moving to ",current_position)
+	#print("moving to ",current_position)
 	tween_drop.tween_property($".","position",current_position,0.5)
-	print("returned ",num," to ",self.get_parent(),parent)
+	#print("returned ",num," to ",self.get_parent(),parent)
 	# TODO: fix issue with parent but not .get_parant() being set
 
 func _process(delta: float) -> void:
@@ -79,6 +81,8 @@ func _process(delta: float) -> void:
 			var parent_area : Area2D = null
 			if parent:
 				parent_area=parent.get_node_or_null("Area")
+				#BUG: not getting set or not registering overlap
+			#if not($Click_Box.has_overlapping_areas()) or $Click_Box.overl :
 			if not($Click_Box.has_overlapping_areas()) or $Click_Box.overlaps_area(parent_area):
 				return_to_place()
 				#TODO: fix: it sometimes gets called before current position gets 
@@ -89,5 +93,4 @@ func _on_click_box_input_event(viewport: Node, event: InputEvent, shape_idx: int
 		in_hand=true
 		if parent:
 			parent.move_to_front()
-			#print(parent.name,current_position)
 		set_process(true)
