@@ -1,13 +1,29 @@
-[gd_scene load_steps=5 format=3 uid="uid://eb50e85jkwsx"]
+[gd_scene load_steps=6 format=3 uid="uid://eb50e85jkwsx"]
 
 [ext_resource type="Script" uid="uid://ci11tky1alcqy" path="res://game.gd" id="1_xkndl"]
 [ext_resource type="PackedScene" uid="uid://da6sdcp2we8lt" path="res://Game elements/Card.tscn" id="2_u44n3"]
 [ext_resource type="PackedScene" uid="uid://1bif2i1rkywb" path="res://Game elements/Tableau.tscn" id="2_xkndl"]
 [ext_resource type="PackedScene" uid="uid://c0nfdi34vpoh8" path="res://Game elements/Stockpile.tscn" id="4_sb48q"]
+[ext_resource type="PackedScene" uid="uid://b25j6f3w7ltmg" path="res://Game elements/Foundation_Pile.tscn" id="5_t88pq"]
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_xkndl")
 CARD = ExtResource("2_u44n3")
+
+[node name="Heart_Pile" parent="." instance=ExtResource("5_t88pq")]
+position = Vector2(500, 100)
+
+[node name="Diamond_Pile" parent="." instance=ExtResource("5_t88pq")]
+position = Vector2(600, 100)
+suit = 2
+
+[node name="Spade_Pile" parent="." instance=ExtResource("5_t88pq")]
+position = Vector2(700, 100)
+suit = 1
+
+[node name="Clover_Pile" parent="." instance=ExtResource("5_t88pq")]
+position = Vector2(800, 100)
+suit = 3
 
 [node name="Tableau1" parent="." instance=ExtResource("2_xkndl")]
 unique_name_in_owner = true

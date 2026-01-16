@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3 uid="uid://b25j6f3w7ltmg"]
+
+[ext_resource type="Script" uid="uid://d1h0ctf655nmn" path="res://Game elements/foundation_pile.gd" id="1_tif6h"]
+[ext_resource type="Texture2D" uid="uid://cqiyu1ifc04gw" path="res://Sprites/Cards.png" id="2_4f6cf"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tif6h"]
+size = Vector2(40, 60)
+
+[node name="FoundationPile" type="Node2D"]
+scale = Vector2(2, 2)
+script = ExtResource("1_tif6h")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_4f6cf")
+hframes = 13
+vframes = 5
+frame = 53
+
+[node name="Area" type="Area2D" parent="."]
+scale = Vector2(0.75, 0.75)
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area"]
+shape = SubResource("RectangleShape2D_tif6h")
+
+[connection signal="area_entered" from="Area" to="." method="_on_area_area_entered"]
+[connection signal="area_exited" from="Area" to="." method="_on_area_area_exited"]

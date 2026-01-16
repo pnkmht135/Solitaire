@@ -9,7 +9,7 @@ extends Table_Element
 @onready var offset : int = 10
 @onready var card_to_add : Card = null
 
-# TODO: error persists with remove card, where next does not flip 
+# TODO: do i need this to have a collision layer? Since clicking is handled in card
 
 func _ready() -> void:
 	set_process(false)
@@ -44,14 +44,17 @@ func _process(_delta: float) -> void:
 			if cards_stack.is_empty():
 				if card_to_add.num==12:
 					card_to_add.move_to(self)
+				card_to_add = null
 				set_process(false)
 				return
 			var topcard=cards_stack[-1]
 			if (topcard.suit)%2!=card_to_add.suit%2 and topcard.num-1==card_to_add.num:
 				card_to_add.move_to(self)
+				card_to_add=null
 				return
 			#print("Cant place here ",card_to_add.current_position," ",card_to_add.parent)
 			card_to_add.return_to_place()
+			card_to_add=null
 			set_process(false)
 
 # TODO: get_children does not get child  of child? Fix with custom func.

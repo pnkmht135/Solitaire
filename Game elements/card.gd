@@ -50,7 +50,7 @@ func move_to(new_parent:Table_Element)->void:
 	if parent:
 		parent.remove_card(self,index) 
 	new_parent.add_card(self)
-	#reparent(new_parent) 
+	#TODO: remove redundancies in next line
 	parent=new_parent
 
 func make_clickbox_stacksized():
