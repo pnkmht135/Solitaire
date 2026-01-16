@@ -47,6 +47,7 @@ func disable()->void:
 	$Click_Box.monitoring=false	
 	
 func move_to(new_parent:Table_Element)->void:
+	in_hand = false
 	if parent:
 		parent.remove_card(self,index) 
 	new_parent.add_card(self)
@@ -62,6 +63,7 @@ func reset_clickbox():
 	$Click_Box.position.y=0	
 
 func return_to_place()->void:
+	in_hand=false # TODO: make this an assert
 	var tween_drop = create_tween()
 	tween_drop.set_ease(Tween.EASE_IN_OUT)
 	#TODO: double check if global or local needed here 

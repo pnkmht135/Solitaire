@@ -19,7 +19,6 @@ func _ready() -> void:
 	sprite_2d.frame=map[suit]
 
 func add_card(card:Card)->void:
-	card.in_hand=false
 	if not cards_stack.is_empty():
 		var topcard: Card = cards_stack[-1]
 		topcard.disable()
@@ -32,24 +31,25 @@ func add_card(card:Card)->void:
 	num_cards+=1
 	
 func remove_card(card:Card, index:int)->void:
-	if card!=cards_stack[-1]:
+	if not(cards_stack.is_empty()) and card!=cards_stack[-1]:
 		push_error("Can only remove topmost card from ",self.name)
 		return
 	cards_stack.erase(card)
 	num_cards-=1
-	cards_stack[-1].enable()
+	if not cards_stack.is_empty():
+		cards_stack[-1].enable()
 
 ## Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	if card_to_add != null:
 		if Input.is_action_just_released("Click"):
-			print("Trying to add card num %d suit %d to pile %d" % [card_to_add.num,card_to_add.suit,suit])
-			print(card_to_add)
+			#print("Trying to add card num %d suit %d to pile %d" % [card_to_add.num,card_to_add.suit,suit])
+			#print(card_to_add)
 			if card_to_add.suit == suit and card_to_add.num == num_cards:
-				print("Added to foundation pile %d!" % suit)
-				print(card_to_add) # not null
+				#print("Added to foundation pile %d!" % suit)
+				#print(card_to_add) # not null
 				card_to_add.move_to(self)	#TODO: why is this makeing null
-				print(card_to_add) # is null now???
+				#print(card_to_add) # is null now???
 				card_to_add = null
 				set_process(false)
 				return

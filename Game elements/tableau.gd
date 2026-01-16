@@ -10,6 +10,7 @@ extends Table_Element
 @onready var card_to_add : Card = null
 
 # TODO: do i need this to have a collision layer? Since clicking is handled in card
+# BUG: long open stacks not handled properly so moving long stack-> next doesnt flip
 
 func _ready() -> void:
 	set_process(false)
@@ -61,15 +62,16 @@ func _process(_delta: float) -> void:
 func add_card(card: Card):
 	#TODO: properly handle cases of adding stack of crads for moving area
 	#TODO: handle open card spacing when moving area
-	card.in_hand=false
 	if num_cards>0:
 		#print("adding to a non-empty stack")
 		var topcard= cards_stack[-1]
 		area.position=Vector2(0,offset*(num_cards+len(card.children)))
 		topcard.make_clickbox_stacksized()
 		card.reparent(topcard)
+		print("before: %d has %d children" % [topcard.num,len(topcard.children)])
 		topcard.children.append(card)
 		topcard.children.append_array(card.children) # TODO: check if this works like python
+		print("after: %d has %d children" % [topcard.num,len(topcard.children)])
 		card.position=Vector2(0,offset)
 		card.current_position=card.position
 	elif num_cards==0:
