@@ -19,6 +19,7 @@ func _ready() -> void:
 	sprite_2d.frame=map[suit]
 
 func add_card(card:Card)->void:
+	card.in_hand=false
 	if not cards_stack.is_empty():
 		var topcard: Card = cards_stack[-1]
 		topcard.disable()
