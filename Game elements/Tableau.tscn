@@ -4,20 +4,19 @@
 [ext_resource type="Texture2D" uid="uid://cqiyu1ifc04gw" path="res://Sprites/Cards.png" id="2_ovack"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rsw77"]
-size = Vector2(76, 116)
+size = Vector2(40, 60)
 
 [node name="Tableau" type="Node2D"]
+scale = Vector2(2, 2)
 script = ExtResource("1_rsw77")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(2, 2)
 texture = ExtResource("2_ovack")
 hframes = 13
 vframes = 5
 frame = 53
 
 [node name="Area" type="Area2D" parent="."]
-scale = Vector2(0.75, 0.75)
 collision_layer = 2
 
 [node name="Shape" type="CollisionShape2D" parent="Area"]

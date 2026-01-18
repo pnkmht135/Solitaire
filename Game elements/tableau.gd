@@ -5,7 +5,8 @@ extends Table_Element
 # var cards_stack : Array[Card] = [] Defined in Table_Elemet Class
 # var current_index: int = 0 Defined in Table_Element class
 @onready var area: Area2D = $Area
-@onready var offset : int = 10
+var offset : int = 5
+var open_offset: int = 10
 @onready var card_to_add : Card = null
 var first_open = 0
 
@@ -31,10 +32,8 @@ func initiate(cards:Array[Card]) -> void:
 			card.index=index
 			card.reparent(self)
 			card.parent=self
-			var tween = create_tween()
-			tween.set_ease(Tween.EASE_IN_OUT)
-			tween.tween_property(card,"position",Vector2(0,current_offset),1)
 			card.current_position=Vector2(0,current_offset)
+			card.return_to_place(1)
 			current_offset+=offset
 			index+=1
 			card.move_to_front()
@@ -62,9 +61,15 @@ func _process(_delta: float) -> void:
 			card_to_add=null
 			set_process(false)
 
+func get_offset()->int:
+	print("Stack info:",num_cards," ",first_open)	
+	if num_cards==0:
+		return 0
+	return offset*first_open+(open_offset)*(num_cards-first_open-1)
+
+# BUG: add card/remove card bug, seems like all children are not added to tabluea stack
+
 func add_card(card: Card):
-	#TODO: properly handle cases of adding stack of crads for moving area
-	#TODO: handle open card spacing when moving area
 	if num_cards>0:
 		#print("adding to a non-empty stack")
 		var topcard= cards_stack[-1]
@@ -75,7 +80,7 @@ func add_card(card: Card):
 		topcard.children.append(card)
 		topcard.children.append_array(card.children) # TODO: check if this works like python
 		print("after: %d has %d children" % [topcard.num,len(topcard.children)])
-		card.position=Vector2(0,offset)
+		card.position=Vector2(0,open_offset)
 		card.current_position=card.position
 	elif num_cards==0:
 		print("Empty stack!!")
@@ -85,7 +90,7 @@ func add_card(card: Card):
 		card.current_position=card.position
 		#TODO: handle area.pos outside of if and elif?
 	num_cards+=len(card.children)+1 # +1 to include card itself
-	area.position=Vector2(0,offset*(num_cards))
+	area.position=Vector2(0,get_offset())
 	card.parent=self
 	cards_stack.append(card)
 	for child in card.children:
@@ -95,11 +100,9 @@ func add_card(card: Card):
 
 func remove_card(card:Card,index:int)->void:
 	#TODO: Bug where tabluea area being sent too high/back
-	#TODO: change to use first_open instead
 	if cards_stack.is_empty():
 		push_error("Cannot remove card from an empty Tabluea: ",self.name)
 		return
-	#print(len(remove_stack)," number of children")
 	var card_children = cards_stack.slice(card.index+1,num_cards+1)
 	cards_stack.erase(card)
 	card.children=card_children
@@ -108,23 +111,20 @@ func remove_card(card:Card,index:int)->void:
 		cards_stack.erase(child) 
 		print("removed: ",child.num)
 		num_cards-=1		
-	if num_cards<=0:
-		num_cards=0
-		area.position=Vector2(0,0)
-	else:
-		area.position=Vector2(0,offset*(num_cards-1)) 
 	if not(cards_stack.is_empty()):
-		var topcard = cards_stack[-1]  # is sometimes reading from the wrong card. Removal issue
-		print(topcard.num," Is revealed? ",topcard.is_hidden) #TODO:sometimes not flipped whn should
+		var topcard = cards_stack[-1]  
+		print(topcard.num," Is revealed? ",topcard.is_hidden) 
 		if topcard.is_hidden:
-			print("Card revealed.")
-			cards_stack[-1].flip_card()
-			first_open=cards_stack[-1].index
-			return
+			print("Card revealed. ",topcard.index)
+			topcard.flip_card()
+			first_open=topcard.index
 		# TODO: incorperate this loop into the prev children loop
-		for child in card_children:
-			topcard.children.erase(child)
+		# OR: do not need cos card_children always set in remove_card
+		#for child in card_children:
+			#topcard.children.erase(child)
 		topcard.reset_clickbox()
+	area.position=Vector2(0,get_offset()) #calling too early, b4 firstopen is set
+
 # TODO: change func names to reflect click area rename to area
 func _on_click_area_area_entered(card_area: Area2D) -> void:
 	# when a card hitbox enteres tablue click area

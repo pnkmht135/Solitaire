@@ -62,13 +62,13 @@ func reset_clickbox():
 	$Click_Box.scale.y = 1
 	$Click_Box.position.y=0	
 
-func return_to_place()->void:
+func return_to_place(time=0.5)->void:
 	in_hand=false # TODO: make this an assert
 	var tween_drop = create_tween()
 	tween_drop.set_ease(Tween.EASE_IN_OUT)
 	#TODO: double check if global or local needed here 
 	#print("moving to ",current_position)
-	tween_drop.tween_property($".","position",current_position,0.5)
+	tween_drop.tween_property($".","position",current_position,time)
 	#print("returned ",num," to ",self.get_parent(),parent)
 	# TODO: fix issue with parent but not .get_parant() being set
 
