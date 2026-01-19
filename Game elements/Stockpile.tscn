@@ -7,7 +7,7 @@
 size = Vector2(80, 120)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qa6s2"]
-size = Vector2(40, 60)
+size = Vector2(83.3333, 60)
 
 [node name="Stockpiile" type="Node2D"]
 script = ExtResource("1_e811g")
@@ -35,11 +35,14 @@ hframes = 13
 vframes = 5
 frame = 53
 
-[node name="Click_Opened" type="Area2D" parent="Opened"]
+[node name="Click_Opened" type="Area2D" parent="."]
+position = Vector2(100, 0)
+scale = Vector2(2, 2)
 collision_layer = 2
 collision_mask = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Opened/Click_Opened"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Click_Opened"]
+position = Vector2(16.25, 0)
 scale = Vector2(0.75, 0.75)
 shape = SubResource("RectangleShape2D_qa6s2")
 

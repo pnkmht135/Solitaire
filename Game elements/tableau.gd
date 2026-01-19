@@ -88,6 +88,7 @@ func add_card(card: Card):
 		card.index=0
 		card.position=Vector2(0,0)
 		card.current_position=card.position
+		first_open=0
 		#TODO: handle area.pos outside of if and elif?
 	num_cards+=len(card.children)+1 # +1 to include card itself
 	area.position=Vector2(0,get_offset())
@@ -123,6 +124,8 @@ func remove_card(card:Card,index:int)->void:
 		#for child in card_children:
 			#topcard.children.erase(child)
 		topcard.reset_clickbox()
+	else:
+		first_open=-1
 	area.position=Vector2(0,get_offset()) #calling too early, b4 firstopen is set
 
 # TODO: change func names to reflect click area rename to area

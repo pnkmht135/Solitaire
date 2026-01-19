@@ -44,7 +44,7 @@ func enable()->void:
 func disable()->void:
 	$Click_Box/CollisionShape2D.disabled=true
 	$Click_Box.monitorable=false
-	$Click_Box.monitoring=false	
+	$Click_Box.monitoring=false
 	
 func move_to(new_parent:Table_Element)->void:
 	in_hand = false
@@ -60,17 +60,20 @@ func make_clickbox_stacksized():
 	
 func reset_clickbox():
 	$Click_Box.scale.y = 1
-	$Click_Box.position.y=0	
+	$Click_Box.position.y= 0
 
 func return_to_place(time=0.5)->void:
 	in_hand=false # TODO: make this an assert
 	var tween_drop = create_tween()
 	tween_drop.set_ease(Tween.EASE_IN_OUT)
-	#TODO: double check if global or local needed here 
-	#print("moving to ",current_position)
 	tween_drop.tween_property($".","position",current_position,time)
-	#print("returned ",num," to ",self.get_parent(),parent)
-	# TODO: fix issue with parent but not .get_parant() being set
+
+func get_parent_area()->Area2D:
+	if parent == null:
+		return null
+	if parent.get_node_or_null("Area")!=null:
+		return parent.get_node_or_null("Area")
+	return parent.get_node_or_null("Click_Opened")
 
 func _process(delta: float) -> void:
 	if in_hand: #TODO: i think this+set process being incorrectly handled. see: next to next todo
@@ -78,14 +81,8 @@ func _process(delta: float) -> void:
 		if Input.is_action_just_released("Click"):
 			in_hand=false
 			set_process(false)
-			# TODO: Make this if statements cleaner
-			# TODO: gives non-fatal error: Parameter "p_area" is null. though null is intended
 			var parent_area : Area2D = null
-			if parent:
-				parent_area=parent.get_node_or_null("Area")
-				#BUG: not getting set or not registering overlap
-			#if not($Click_Box.has_overlapping_areas()) or $Click_Box.overl :
-			if not($Click_Box.has_overlapping_areas()) or $Click_Box.overlaps_area(parent_area):
+			if not($Click_Box.has_overlapping_areas()) or $Click_Box.overlaps_area(get_parent_area()):
 				return_to_place()
 				#TODO: fix: it sometimes gets called before current position gets 
 				# updated but after its parent becomes another card
