@@ -8,7 +8,7 @@ extends Table_Element
 @onready var click_closed: Area2D = $Click_Closed
 @onready var click_opened: Area2D = $Click_Opened # TODO: might not need, use card hitbox instead!
 var open_offset = Vector2(15,0)
-var step = 3 # TODO: maybe make this non-hardcoded?
+var step = 1 # TODO: maybe make this non-hardcoded?
 
 # TODO: spam clicking causes visual bug where open cards dont go to (0,0) 
 

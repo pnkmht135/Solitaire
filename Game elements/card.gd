@@ -75,17 +75,27 @@ func get_parent_area()->Area2D:
 		return parent.get_node_or_null("Area")
 	return parent.get_node_or_null("Click_Opened")
 
+func should_return()->bool:
+	if $Click_Box.overlaps_area(get_parent_area()):
+		return true
+	var overlapping_areas: Array[Area2D] = $Click_Box.get_overlapping_areas()
+	for area in overlapping_areas: # TODO: maybe dont use for loop
+		var area_parent=area.get_parent()
+		print(area_parent.name) #potential BUG here/in tablue code when this happends
+		if area_parent is Tableau and area_parent.can_add_card(self):
+			return false
+		if area_parent is Foundation_Pile and area_parent.can_add_card(self):
+			return false
+	return true
+	
 func _process(delta: float) -> void:
-	if in_hand: #TODO: i think this+set process being incorrectly handled. see: next to next todo
+	if in_hand: 
 		global_position=get_global_mouse_position()
 		if Input.is_action_just_released("Click"):
-			in_hand=false
+			in_hand=false # TODO: might need to handle hitbox size as well
 			set_process(false)
-			var parent_area : Area2D = null
-			if not($Click_Box.has_overlapping_areas()) or $Click_Box.overlaps_area(get_parent_area()):
+			if should_return():
 				return_to_place()
-				#TODO: fix: it sometimes gets called before current position gets 
-				# updated but after its parent becomes another card
 			
 func _on_click_box_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
 	if event.is_action_pressed("Click") and not(is_hidden):

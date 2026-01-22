@@ -30,7 +30,7 @@ func add_card(card:Card)->void:
 	cards_stack.append(card)
 	card.enable()
 	num_cards+=1
-	if num_cards > 0:
+	if num_cards == 13:
 		game.check_game_win()
 	
 func remove_card(card:Card, index:int)->void:
@@ -42,25 +42,20 @@ func remove_card(card:Card, index:int)->void:
 	if not cards_stack.is_empty():
 		cards_stack[-1].enable()
 
-## Called every frame. 'delta' is the elapsed time since the previous frame.
+func can_add_card(card:Card)->bool:
+	if card.suit == suit and card.num == num_cards:
+		return true
+	return false
+
 func _process(delta: float) -> void:
 	if card_to_add != null:
 		if Input.is_action_just_released("Click"):
-			#print("Trying to add card num %d suit %d to pile %d" % [card_to_add.num,card_to_add.suit,suit])
-			#print(card_to_add)
-			if card_to_add.suit == suit and card_to_add.num == num_cards:
-				#print("Added to foundation pile %d!" % suit)
-				#print(card_to_add) # not null
-				card_to_add.move_to(self)	#TODO: why is this makeing null
-				#print(card_to_add) # is null now???
-				card_to_add = null
-				set_process(false)
-				return
-				#card_to_add.return_to_place()
-			#else:
-			card_to_add.return_to_place()
+			if can_add_card(card_to_add):
+				card_to_add.move_to(self)	#Note: this makes card_to_add null. Pointer stuff probably
 			card_to_add = null
 			set_process(false)
+	else:
+		set_process(false) # for sanity
 
 func _on_area_area_entered(card_area: Area2D) -> void:
 	# when a card hitbox enteres tablue click area

@@ -42,28 +42,29 @@ func initiate(cards:Array[Card]) -> void:
 		area.move_to_front()
 		cards_stack[-1].flip_card() 
 
+func can_add_card(card:Card)->bool:
+	if cards_stack.is_empty():
+		if card.num==12:
+			return true
+		return false
+	var top_card = cards_stack[-1]
+	if (top_card.suit)%2!=(card.suit)%2 and top_card.num-1==card.num:
+		return true
+	return false
+
 func _process(_delta: float) -> void:
-	# TODO: manage this nesting!!!
 	if card_to_add != null:
 		if Input.is_action_just_released("Click"):
-			if cards_stack.is_empty():
-				if card_to_add.num==12:
-					card_to_add.move_to(self)
-				card_to_add = null
-				set_process(false)
-				return
-			var topcard=cards_stack[-1]
-			if (topcard.suit)%2!=card_to_add.suit%2 and topcard.num-1==card_to_add.num:
+			var can_add: bool = can_add_card(card_to_add)
+			if can_add:
 				card_to_add.move_to(self)
-				card_to_add=null
-				return
-			#print("Cant place here ",card_to_add.current_position," ",card_to_add.parent)
-			card_to_add.return_to_place()
-			card_to_add=null
+			card_to_add = null
 			set_process(false)
+	else:
+		set_process(false) # for sanity
 
 func get_offset()->int:
-	print("Stack info:",num_cards," ",first_open)	
+	#print("Stack info:",num_cards," ",first_open)	
 	if num_cards==0:
 		return 0
 	return offset*first_open+(open_offset)*(num_cards-first_open-1)
@@ -77,14 +78,14 @@ func add_card(card: Card):
 		topcard.make_clickbox_stacksized()
 		card.reparent(topcard)
 		card.index=num_cards
-		print("before: %d has %d children" % [topcard.num,len(topcard.children)])
+		#print("before: %d has %d children" % [topcard.num,len(topcard.children)])
 		topcard.children.append(card)
 		topcard.children.append_array(card.children) # TODO: check if this works like python
-		print("after: %d has %d children" % [topcard.num,len(topcard.children)])
+		#print("after: %d has %d children" % [topcard.num,len(topcard.children)])
 		card.position=Vector2(0,open_offset)
 		card.current_position=card.position
 	elif num_cards==0:
-		print("Empty stack!!")
+		#print("Empty stack!!")
 		card.reparent(self)
 		card.index=0
 		card.position=Vector2(0,0)
@@ -97,7 +98,6 @@ func add_card(card: Card):
 	cards_stack.append(card)
 	var index: int = card.index+1
 	for child in card.children:
-		# TODO: set child.index here!
 		cards_stack.append(child)
 		child.index=index
 		index+=1
@@ -110,19 +110,18 @@ func remove_card(card:Card,index:int)->void:
 		push_error("Cannot remove card from an empty Tabluea: ",self.name)
 		return
 	var card_children = cards_stack.slice(card.index+1,num_cards+1)
-	# BUG: card.index not being correct wen card was added as a child of another
 	cards_stack.erase(card)
 	card.children=card_children
 	num_cards-=1
 	for child in card_children:
 		cards_stack.erase(child) 
-		print("removed: ",child.num)
+		#print("removed: ",child.num)
 		num_cards-=1		
 	if not(cards_stack.is_empty()):
 		var topcard = cards_stack[-1]  
-		print(topcard.num," Is revealed? ",topcard.is_hidden) 
+		#print(topcard.num," Is revealed? ",topcard.is_hidden) 
 		if topcard.is_hidden:
-			print("Card revealed. ",topcard.index)
+			#print("Card revealed. ",topcard.index)
 			topcard.flip_card()
 			first_open=topcard.index
 		topcard.reset_clickbox()

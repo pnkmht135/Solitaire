@@ -10,12 +10,13 @@ extends Node2D
 @onready var tableau_6: Tableau = %Tableau6
 @onready var tableau_7: Tableau = %Tableau7
 @onready var stockpile: Stockpile = $Stockpile
-var Foundation_Piles: Array[Foundation_Pile] = [
-	$Heart_Pile,
-	$Diamond_Pile,
-	$Spade_Pile,
-	$Clover_Pile
-]
+@onready var heart_pile: Foundation_Pile = $Heart_Pile
+@onready var diamond_pile: Foundation_Pile = $Diamond_Pile
+@onready var spade_pile: Foundation_Pile = $Spade_Pile
+@onready var clover_pile: Foundation_Pile = $Clover_Pile
+
+var Foundation_Piles: Array[Foundation_Pile]
+# for some raason declaring this array and its contents here is not working, this init in _ready()
 
 var Deck : Array[Card]
 
@@ -25,6 +26,7 @@ func _ready() -> void:
 	# TODO: lookinto this ysort stuff:
 	#y_sort_enabled=true
 	var suits: Array[Global.Suit] =[Global.Suit.HEART,Global.Suit.DIAMOND,Global.Suit.SPADE,Global.Suit.CLOVER]
+	Foundation_Piles=[heart_pile,diamond_pile,spade_pile,clover_pile]
 	for things in suits:
 		for i in range(0,13):
 			var card= CARD.instantiate()
@@ -44,7 +46,10 @@ func _ready() -> void:
 	stockpile.initiate(Deck.slice(28,53))
 		
 func are_Foundation_Piles_Full()->bool:
-	return Foundation_Piles.all(func(value): return value==13)
+	for pile in Foundation_Piles:
+		if pile.num_cards!=13:
+			return false
+	return true
 
 func check_game_win():
 	if are_Foundation_Piles_Full():

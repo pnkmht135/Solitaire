@@ -16,3 +16,6 @@ func add_card(card:Card)->void:
 	
 func remove_card(card:Card, index:int)->void:
 	pass
+
+func can_add_card(card:Card)->bool:
+	return false
