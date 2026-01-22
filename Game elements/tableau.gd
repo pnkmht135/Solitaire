@@ -12,6 +12,7 @@ var first_open = 0
 
 # TODO: do i need this to have a collision layer? Since clicking is handled in card
 # BUG: long open stacks not handled properly so moving long stack-> next doesnt flip
+# BUG: when arge stacks being moved around too seems like numcard/cardstack being reduced too much!!
 
 # TODO: handle adding children to ALL open cards when adding carstack. 
 # do this with current index to keep track of topmost open card.
@@ -94,17 +95,22 @@ func add_card(card: Card):
 	area.position=Vector2(0,get_offset())
 	card.parent=self
 	cards_stack.append(card)
+	var index: int = card.index+1
 	for child in card.children:
+		# TODO: set child.index here!
 		cards_stack.append(child)
+		child.index=index
+		index+=1
 		child.parent=self
 		
-
+# Change so card.children is no more and add_card takes in optional stack!
 func remove_card(card:Card,index:int)->void:
-	#TODO: Bug where tabluea area being sent too high/back
+	#TODO: Bug removing sends hitbox to 0 and doesnt reset card box
 	if cards_stack.is_empty():
 		push_error("Cannot remove card from an empty Tabluea: ",self.name)
 		return
 	var card_children = cards_stack.slice(card.index+1,num_cards+1)
+	# BUG: card.index not being correct wen card was added as a child of another
 	cards_stack.erase(card)
 	card.children=card_children
 	num_cards-=1
@@ -119,10 +125,6 @@ func remove_card(card:Card,index:int)->void:
 			print("Card revealed. ",topcard.index)
 			topcard.flip_card()
 			first_open=topcard.index
-		# TODO: incorperate this loop into the prev children loop
-		# OR: do not need cos card_children always set in remove_card
-		#for child in card_children:
-			#topcard.children.erase(child)
 		topcard.reset_clickbox()
 	else:
 		first_open=-1

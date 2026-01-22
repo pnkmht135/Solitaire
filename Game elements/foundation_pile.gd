@@ -3,6 +3,7 @@ extends Table_Element
 
 @onready var sprite_2d: Sprite2D = $Sprite2D
 @export var suit: Global.Suit= Global.Suit.HEART
+@export var game : Game
 var card_to_add: Card = null
 # var num_cards : int = 0 Defined in Table_Element Class
 # var cards_stack : Array[Card] = [] Defined in Table_Elemet Class
@@ -29,6 +30,8 @@ func add_card(card:Card)->void:
 	cards_stack.append(card)
 	card.enable()
 	num_cards+=1
+	if num_cards > 0:
+		game.check_game_win()
 	
 func remove_card(card:Card, index:int)->void:
 	if not(cards_stack.is_empty()) and card!=cards_stack[-1]:

@@ -93,3 +93,9 @@ func _on_click_box_input_event(viewport: Node, event: InputEvent, shape_idx: int
 		if parent:
 			parent.move_to_front()
 		set_process(true)
+
+func party():
+	var tween = create_tween()
+	tween.set_parallel()
+	tween.tween_property(sprite,"scale",Vector2(0,0),1)
+	tween.tween_property(sprite,"rotation",360,1)
