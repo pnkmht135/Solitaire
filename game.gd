@@ -2,6 +2,7 @@ class_name  Game
 extends Node2D
 
 @export var CARD: PackedScene
+# TODO: change these to be @export instaed.
 @onready var tableau_1: Tableau = %Tableau1
 @onready var tableau_2: Tableau = %Tableau2
 @onready var tableau_3: Tableau = %Tableau3

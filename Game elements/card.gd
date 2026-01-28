@@ -12,10 +12,9 @@ var suit : Global.Suit = Global.Suit.HIDDEN
 @export_range(0,12) var num : int = 1
 var is_hidden : bool = true
 var children: Array[Card] = []
-# TODO: have the index of the card in its parent saved in card itself?
-# TODO: recreate + fix bug of card sliding far forward when stacking tabluea
-# TODO: maybe switch to global position for return card to avoid headaches
-# TODO: maybe use a state machine for cards.
+# TODO: optimisation ke liye try handle moving things all in the card itself
+# i.e check if can add in the card, and if so, then call move_to here only, so then turn off masks on other area 2d
+
 func _ready() -> void:
 	is_hidden=true
 	set_process(false)
@@ -36,6 +35,7 @@ func flip_card()->void:
 	tween.tween_property(sprite, "frame_coords", new_frame,0)
 	tween.tween_property(sprite, "scale:x", 1,0.5)
 
+#TODO: change so clickboxes imported @onready and not every time.
 func enable()->void:
 	$Click_Box/CollisionShape2D.disabled=false
 	$Click_Box.monitorable=true
@@ -75,18 +75,24 @@ func get_parent_area()->Area2D:
 		return parent.get_node_or_null("Area")
 	return parent.get_node_or_null("Click_Opened")
 
-func should_return()->bool:
+func return_or_move()->void:
 	if $Click_Box.overlaps_area(get_parent_area()):
-		return true
+		return_to_place()
+		return
 	var overlapping_areas: Array[Area2D] = $Click_Box.get_overlapping_areas()
 	for area in overlapping_areas: # TODO: maybe dont use for loop
 		var area_parent=area.get_parent()
 		print(area_parent.name) #potential BUG here/in tablue code when this happends
 		if area_parent is Tableau and area_parent.can_add_card(self):
-			return false
+			print("Can Add to Tabluea")
+			move_to(area_parent)
+			return
 		if area_parent is Foundation_Pile and area_parent.can_add_card(self):
-			return false
-	return true
+			print("Can Add to Pile")
+			move_to(area_parent)
+			return
+	print("No relavent overlapping areas.")
+	return_to_place()
 	
 func _process(delta: float) -> void:
 	if in_hand: 
@@ -94,8 +100,7 @@ func _process(delta: float) -> void:
 		if Input.is_action_just_released("Click"):
 			in_hand=false # TODO: might need to handle hitbox size as well
 			set_process(false)
-			if should_return():
-				return_to_place()
+			return_or_move()
 			
 func _on_click_box_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
 	if event.is_action_pressed("Click") and not(is_hidden):
@@ -105,7 +110,9 @@ func _on_click_box_input_event(viewport: Node, event: InputEvent, shape_idx: int
 		set_process(true)
 
 func party():
+	disable()
 	var tween = create_tween()
 	tween.set_parallel()
 	tween.tween_property(sprite,"scale",Vector2(0,0),1)
 	tween.tween_property(sprite,"rotation",360,1)
+	

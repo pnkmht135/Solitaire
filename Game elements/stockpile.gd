@@ -4,11 +4,10 @@ extends Table_Element
 # var num_cards : int = 0 Defined in Table_Element class
 # var cards_stack : Array[Card] = [] Defined in Table_Element class
 # var current_index: int = 0 Defined in Table_Element class
-#@onready var open_pos: Vector2 =Vector2(100,0) #TODO: make this not hardcoded?
 @onready var click_closed: Area2D = $Click_Closed
 @onready var click_opened: Area2D = $Click_Opened # TODO: might not need, use card hitbox instead!
 var open_offset = Vector2(15,0)
-var step = 1 # TODO: maybe make this non-hardcoded?
+@export var step = 3 # TODO: maybe make this non-hardcoded?
 
 # TODO: spam clicking causes visual bug where open cards dont go to (0,0) 
 

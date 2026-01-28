@@ -46,27 +46,3 @@ func can_add_card(card:Card)->bool:
 	if card.suit == suit and card.num == num_cards:
 		return true
 	return false
-
-func _process(delta: float) -> void:
-	if card_to_add != null:
-		if Input.is_action_just_released("Click"):
-			if can_add_card(card_to_add):
-				card_to_add.move_to(self)	#Note: this makes card_to_add null. Pointer stuff probably
-			card_to_add = null
-			set_process(false)
-	else:
-		set_process(false) # for sanity
-
-func _on_area_area_entered(card_area: Area2D) -> void:
-	# when a card hitbox enteres tablue click area
-	if self.is_ancestor_of(card_area) or (card_to_add!=null and card_to_add.is_ancestor_of(card_area)):
-		# No interaction if card is already in the pile
-		return
-	card_to_add = card_area.get_parent()
-	set_process(true)
-
-
-func _on_area_area_exited(area: Area2D) -> void:
-	# might need if statement
-	card_to_add = null
-	set_process(false)

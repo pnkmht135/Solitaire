@@ -52,17 +52,6 @@ func can_add_card(card:Card)->bool:
 		return true
 	return false
 
-func _process(_delta: float) -> void:
-	if card_to_add != null:
-		if Input.is_action_just_released("Click"):
-			var can_add: bool = can_add_card(card_to_add)
-			if can_add:
-				card_to_add.move_to(self)
-			card_to_add = null
-			set_process(false)
-	else:
-		set_process(false) # for sanity
-
 func get_offset()->int:
 	#print("Stack info:",num_cards," ",first_open)	
 	if num_cards==0:
@@ -128,18 +117,3 @@ func remove_card(card:Card,index:int)->void:
 	else:
 		first_open=-1
 	area.position=Vector2(0,get_offset()) #calling too early, b4 firstopen is set
-
-# TODO: change func names to reflect click area rename to area
-func _on_click_area_area_entered(card_area: Area2D) -> void:
-	# when a card hitbox enteres tablue click area
-	if self.is_ancestor_of(card_area) or (card_to_add!=null and card_to_add.is_ancestor_of(card_area)):
-		# No interaction if card is already part of the tabluea
-		return
-	card_to_add = card_area.get_parent()
-	set_process(true)
-
-func _on_click_area_area_exited(_card_area: Area2D) -> void:
-	# might need if statement
-	card_to_add = null
-	set_process(false)
-	
