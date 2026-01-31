@@ -47,6 +47,8 @@ func _ready() -> void:
 	tableau_6.initiate(Deck.slice(15,21))
 	tableau_7.initiate(Deck.slice(21,28))
 	stockpile.initiate(Deck.slice(28,53))
+	
+	check_game_win()
 		
 func are_Foundation_Piles_Full()->bool:
 	for pile in Foundation_Piles:
@@ -57,5 +59,11 @@ func are_Foundation_Piles_Full()->bool:
 func check_game_win():
 	if are_Foundation_Piles_Full():
 		print("Party!!")
-		for card in Deck:
-			card.party()
+		var tween = create_tween()
+		tween.set_ease(Tween.EASE_IN_OUT)
+		for pile in Foundation_Piles:
+			pile.cards_stack.reverse()
+			tween.tween_callback(pile.move_to_front)
+			for card in pile.cards_stack:
+				card.z_index = 10
+				card.party(tween,100)

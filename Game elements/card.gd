@@ -109,10 +109,14 @@ func _on_click_box_input_event(viewport: Node, event: InputEvent, shape_idx: int
 		if foundation_pile and foundation_pile.can_add_card(self):
 			move_to(foundation_pile)
 
-func party():
+func party(tween: Tween, distance):
 	disable()
-	var tween = create_tween()
-	tween.set_parallel()
-	tween.tween_property(sprite,"scale",Vector2(0,0),1)
-	tween.tween_property(sprite,"rotation",360,1)
+	var random_angle: float = randf_range(0, TAU)
+	var random_direction: Vector2 = Vector2.RIGHT.rotated(random_angle)
+	var target_position: Vector2 = position + random_direction * distance
+	tween.tween_callback(self.move_to_front)
+	tween.tween_property(self,"scale",Vector2(0,0),0.5)
+	tween.parallel().tween_property(self,"rotation",360,0.5)
+	tween.parallel().tween_property(self,"position",target_position,0.5)
+	
 	

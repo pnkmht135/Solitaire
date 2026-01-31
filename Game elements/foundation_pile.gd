@@ -25,7 +25,7 @@ func add_card(card:Card)->void:
 		topcard.disable()
 	card.reparent(self)
 	card.parent=self 
-	card.position=Vector2(0,0)
+	card.position=Vector2(0,0) # TODO: not triggering??
 	card.current_position=Vector2(0,0)
 	cards_stack.append(card)
 	card.enable()
