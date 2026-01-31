@@ -8,8 +8,6 @@ var card_to_add: Card = null
 # var num_cards : int = 0 Defined in Table_Element Class
 # var cards_stack : Array[Card] = [] Defined in Table_Elemet Class
 
-# Called when the node enters the scene tree for the first time.
-# TODO: do i need this to have a collision layer? Since clicking is handled in card
 func _ready() -> void:
 	var map={
 		Global.Suit.HEART:54,
@@ -24,16 +22,16 @@ func add_card(card:Card)->void:
 		var topcard: Card = cards_stack[-1]
 		topcard.disable()
 	card.reparent(self)
-	card.parent=self 
 	card.position=Vector2(0,0) # TODO: not triggering??
 	card.current_position=Vector2(0,0)
+	card.parent=self 
 	cards_stack.append(card)
 	card.enable()
 	num_cards+=1
 	if num_cards == 13:
 		game.check_game_win()
 	
-func remove_card(card:Card, index:int)->void:
+func remove_card(card:Card)->void:
 	if not(cards_stack.is_empty()) and card!=cards_stack[-1]:
 		push_error("Can only remove topmost card from ",self.name)
 		return

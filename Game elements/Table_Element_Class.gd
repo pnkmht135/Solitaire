@@ -3,7 +3,7 @@ extends Node2D
 
 @onready var num_cards : int = 0
 @onready var cards_stack : Array[Card] = []
-@onready var current_index: int = 0 #TODO: remove in favour of locals?
+@onready var current_index: int = 0 
 
 func _ready() -> void:
 	set_process(false)
@@ -14,7 +14,7 @@ func initiate(cards : Array[Card]) -> void:
 func add_card(card:Card)->void:
 	pass
 	
-func remove_card(card:Card, index:int)->void:
+func remove_card(card:Card)->void:
 	pass
 
 func can_add_card(card:Card)->bool:

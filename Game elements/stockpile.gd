@@ -5,31 +5,26 @@ extends Table_Element
 # var cards_stack : Array[Card] = [] Defined in Table_Element class
 # var current_index: int = 0 Defined in Table_Element class
 @onready var click_closed: Area2D = $Click_Closed
-@onready var click_opened: Area2D = $Click_Opened # TODO: might not need, use card hitbox instead!
+@onready var opened_cards = $Opened_cards_area
 var open_offset = Vector2(15,0)
-@export var step = 1 # TODO: maybe make this non-hardcoded?
-
-# TODO: spam clicking causes visual bug where open cards dont go to (0,0) 
+@export var step = 3 # TODO: maybe make this non-hardcoded? 
 
 func initiate(cards : Array[Card]) -> void:
-	current_index=-1 # No cards open currently
+	current_index=-1 # No cards open initially
 	if not cards.is_empty():
 		cards_stack=cards
 		num_cards=len(cards)
-		#var ip = Vector2(0,0)
 		for card in cards_stack:
 			card.reparent(self)
 			card.parent=self
 			var tween = create_tween()
 			tween.set_ease(Tween.EASE_IN_OUT)
 			tween.tween_property(card,"position",Vector2(0,0),1)
-			#ip+=Vector2(10,0)
 			card.current_position=position
 		cards_stack.reverse() # because it is facedown on table.
-		click_opened.move_to_front()
+		opened_cards.move_to_front()
 
-func remove_card(card,index)->void:
-	#TODO: not really using index param here. Remove if possible
+func remove_card(card:Card)->void:
 	if current_index==-1:
 		push_error("Cannot remove from a closed/empty stockpile.")
 		return
@@ -53,20 +48,16 @@ func _on_click_closed_input_event(_viewport: Node, event: InputEvent, _shape_idx
 		var tween = create_tween()
 		tween.set_ease(Tween.EASE_IN_OUT)
 		tween.set_parallel()
-		if current_index!=-1: # If there are already open cards:
-			# Disable latest open card
-			cards_stack[current_index].disable() # TODO: moove opened cards back to 0,0!
-			# Move them to (0,0)
-			for card in cards_stack.slice(max(0,current_index-(step-1)),current_index+1):
-				card.current_position=Vector2(0,0)
-				#var tween = create_tween()
-				#tween.set_ease(Tween.EASE_IN_OUT)
-				tween.tween_property(card,"position",Vector2(0,0),0.5)
+		# Hanlding already open cards if needed:
+		if current_index!=-1:
+			cards_stack[current_index].disable() # Disable latest open card
+			for open_card in cards_stack.slice(max(0,current_index-(step-1)),current_index+1):
+				open_card.current_position=Vector2(0,0)
+				tween.tween_property(open_card,"position",Vector2(0,0),0.5)
+		# Case where all cards are open
 		if current_index == num_cards-1:
 			for card in cards_stack:
 				card.reparent(self)
-				#var tween=create_tween()
-				#tween.set_ease(Tween.EASE_IN_OUT)
 				tween.tween_property(card,"position",Vector2(0,0),0.5)
 				card.flip_card()
 			current_index=-1
@@ -74,25 +65,22 @@ func _on_click_closed_input_event(_viewport: Node, event: InputEvent, _shape_idx
 			click_closed.input_pickable = true
 			return
 		var new_index: int
-		# Typical case: reveal next 3 closed cards
-		if current_index<num_cards-step:# num_card-> last_index+1
+		opened_cards.move_to_front()
+		# Typical case, reveal next 3 closed cards
+		if current_index<num_cards-step: # num_card -> last_index+1
 			new_index=current_index+step
-		# Edge case: less than 3 remaining to reveal -> reveal remaining
+		# Edge case, less than 3 remaining to reveal -> reveal remaining
 		else:
 			new_index=num_cards-1
-		#TODO: insert func to make all currently open cards fall in line
 		var revealed: Array[Card] = cards_stack.slice(current_index+1,new_index+1)
-		#revealed.reverse() # Ensure topmost closed element -> bottommost opened
 		var shift = Vector2(0,0)
-		#TODO: Make sure topmost element in array->bottom most in opened
 		for card in revealed:
-			card.reparent(click_opened) #TODO: might be messy beware		
+			card.reparent(opened_cards)
+			tween.tween_callback(card.move_to_front)
 			tween.tween_property(card,"position",shift,1)
 			card.current_position=shift
-# TODO: tween before reparenting so that doesnt swtich to rendering bellow other cards.
-# TODO: that did not fix it, still redering in back when tween starts, what is tween doing.
 			shift+=open_offset
-			card.flip_card() # comment out for testing things
+			card.flip_card()
 			card.disable()
 		current_index=new_index
 		await tween.finished

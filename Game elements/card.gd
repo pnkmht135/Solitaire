@@ -2,6 +2,8 @@ class_name Card
 extends Node2D
 
 # Note: card Clickbox disabled on default.
+@onready var click_box: Area2D = $Click_Box
+@onready var collision_shape_2d: CollisionShape2D = $Click_Box/CollisionShape2D
 @onready var sprite: Sprite2D = %sprite
 @onready var sprite_dict: Dictionary = Global.sprite_dict
 var parent: Table_Element = null # is it in the stockpile or tableau or a pile
@@ -13,9 +15,6 @@ var suit : Global.Suit = Global.Suit.HIDDEN
 var is_hidden : bool = true
 var children: Array[Card] = []
 var foundation_pile: Foundation_Pile
-
-# TODO: optimisation ke liye try handle moving things all in the card itself
-# i.e check if can add in the card, and if so, then call move_to here only, so then turn off masks on other area 2d
 
 func _ready() -> void:
 	is_hidden=true
@@ -39,33 +38,33 @@ func flip_card()->void:
 
 #TODO: change so clickboxes imported @onready and not every time.
 func enable()->void:
-	$Click_Box/CollisionShape2D.disabled=false
-	$Click_Box.monitorable=true
-	$Click_Box.monitoring=true
+	collision_shape_2d.disabled=false
+	click_box.monitorable=true
+	click_box.monitoring=true
 	
 func disable()->void:
-	$Click_Box/CollisionShape2D.disabled=true
-	$Click_Box.monitorable=false
-	$Click_Box.monitoring=false
+	collision_shape_2d.disabled=true
+	click_box.monitorable=false
+	click_box.monitoring=false
 	
 func move_to(new_parent:Table_Element)->void:
 	in_hand = false
 	if parent:
-		parent.remove_card(self,index) 
+		parent.remove_card(self) 
 	new_parent.add_card(self)
 	#TODO: remove redundancies in next line
 	parent=new_parent
 
 func make_clickbox_stacksized():
-	$Click_Box.scale.y = 0.2
-	$Click_Box.position.y=-24
+	click_box.scale.y = 0.2
+	click_box.position.y=-24
 	
 func reset_clickbox():
-	$Click_Box.scale.y = 1
-	$Click_Box.position.y= 0
+	click_box.scale.y = 1
+	click_box.position.y= 0
 
 func return_to_place(time=0.5)->void:
-	in_hand=false # TODO: make this an assert
+	assert(in_hand==false,"Cannot return a card when its in-hand!")
 	var tween_drop = create_tween()
 	tween_drop.set_ease(Tween.EASE_IN_OUT)
 	tween_drop.tween_property($".","position",current_position,time)
@@ -78,13 +77,12 @@ func get_parent_area()->Area2D:
 	return parent.get_node_or_null("Click_Opened")
 
 func return_or_move()->void:
-	if $Click_Box.overlaps_area(get_parent_area()):
+	if click_box.overlaps_area(get_parent_area()):
 		return_to_place()
 		return
-	var overlapping_areas: Array[Area2D] = $Click_Box.get_overlapping_areas()
-	for area in overlapping_areas: # TODO: maybe dont use for loop
+	var overlapping_areas: Array[Area2D] = click_box.get_overlapping_areas()
+	for area in overlapping_areas: # TODO: maybe dont use for loop?
 		var area_parent=area.get_parent()
-		print(area_parent.name) #potential BUG here/in tablue code when this happends
 		if area_parent.can_add_card(self):
 			move_to(area_parent)
 			return
@@ -114,9 +112,8 @@ func party(tween: Tween, distance):
 	var random_angle: float = randf_range(0, TAU)
 	var random_direction: Vector2 = Vector2.RIGHT.rotated(random_angle)
 	var target_position: Vector2 = position + random_direction * distance
+	# Card spins off in random direction
 	tween.tween_callback(self.move_to_front)
 	tween.tween_property(self,"scale",Vector2(0,0),0.5)
 	tween.parallel().tween_property(self,"rotation",360,0.5)
 	tween.parallel().tween_property(self,"position",target_position,0.5)
-	
-	
