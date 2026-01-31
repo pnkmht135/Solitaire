@@ -12,6 +12,8 @@ var suit : Global.Suit = Global.Suit.HIDDEN
 @export_range(0,12) var num : int = 1
 var is_hidden : bool = true
 var children: Array[Card] = []
+var foundation_pile: Foundation_Pile
+
 # TODO: optimisation ke liye try handle moving things all in the card itself
 # i.e check if can add in the card, and if so, then call move_to here only, so then turn off masks on other area 2d
 
@@ -83,12 +85,7 @@ func return_or_move()->void:
 	for area in overlapping_areas: # TODO: maybe dont use for loop
 		var area_parent=area.get_parent()
 		print(area_parent.name) #potential BUG here/in tablue code when this happends
-		if area_parent is Tableau and area_parent.can_add_card(self):
-			print("Can Add to Tabluea")
-			move_to(area_parent)
-			return
-		if area_parent is Foundation_Pile and area_parent.can_add_card(self):
-			print("Can Add to Pile")
+		if area_parent.can_add_card(self):
 			move_to(area_parent)
 			return
 	print("No relavent overlapping areas.")
@@ -108,6 +105,9 @@ func _on_click_box_input_event(viewport: Node, event: InputEvent, shape_idx: int
 		if parent:
 			parent.move_to_front()
 		set_process(true)
+	if event.is_action_pressed("Right Click"):
+		if foundation_pile and foundation_pile.can_add_card(self):
+			move_to(foundation_pile)
 
 func party():
 	disable()

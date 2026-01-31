@@ -27,11 +27,13 @@ func _ready() -> void:
 	# TODO: lookinto this ysort stuff:
 	#y_sort_enabled=true
 	var suits: Array[Global.Suit] =[Global.Suit.HEART,Global.Suit.DIAMOND,Global.Suit.SPADE,Global.Suit.CLOVER]
-	Foundation_Piles=[heart_pile,diamond_pile,spade_pile,clover_pile]
-	for things in suits:
+	print(suits)
+	Foundation_Piles=[heart_pile,spade_pile,diamond_pile,clover_pile]
+	for suit in suits:
 		for i in range(0,13):
 			var card= CARD.instantiate()
-			card.suit=things
+			card.suit=suit
+			card.foundation_pile=Foundation_Piles[suit]
 			card.num=i
 			Deck.append(card)
 			add_child(card) # can comment this out to have cards start in tableuas/other

@@ -49,27 +49,29 @@ func _on_click_closed_input_event(_viewport: Node, event: InputEvent, _shape_idx
 		# Do nothing if no cards
 		if cards_stack.is_empty():
 			return
+		click_closed.input_pickable = false
+		var tween = create_tween()
+		tween.set_ease(Tween.EASE_IN_OUT)
+		tween.set_parallel()
 		if current_index!=-1: # If there are already open cards:
 			# Disable latest open card
 			cards_stack[current_index].disable() # TODO: moove opened cards back to 0,0!
 			# Move them to (0,0)
 			for card in cards_stack.slice(max(0,current_index-(step-1)),current_index+1):
 				card.current_position=Vector2(0,0)
-				var tween = create_tween()
-				tween.set_ease(Tween.EASE_IN_OUT)
+				#var tween = create_tween()
+				#tween.set_ease(Tween.EASE_IN_OUT)
 				tween.tween_property(card,"position",Vector2(0,0),0.5)
-			
-		# for card "in open": card.position = vec2(0,0) 
-		# like if current_index != -1 slice  
-		# Reset stockpile if at end
 		if current_index == num_cards-1:
 			for card in cards_stack:
 				card.reparent(self)
-				var tween=create_tween()
-				tween.set_ease(Tween.EASE_IN_OUT)
+				#var tween=create_tween()
+				#tween.set_ease(Tween.EASE_IN_OUT)
 				tween.tween_property(card,"position",Vector2(0,0),0.5)
 				card.flip_card()
 			current_index=-1
+			await tween.finished
+			click_closed.input_pickable = true
 			return
 		var new_index: int
 		# Typical case: reveal next 3 closed cards
@@ -85,8 +87,6 @@ func _on_click_closed_input_event(_viewport: Node, event: InputEvent, _shape_idx
 		#TODO: Make sure topmost element in array->bottom most in opened
 		for card in revealed:
 			card.reparent(click_opened) #TODO: might be messy beware		
-			var tween = create_tween()
-			tween.set_ease(Tween.EASE_IN_OUT)
 			tween.tween_property(card,"position",shift,1)
 			card.current_position=shift
 # TODO: tween before reparenting so that doesnt swtich to rendering bellow other cards.
@@ -95,4 +95,6 @@ func _on_click_closed_input_event(_viewport: Node, event: InputEvent, _shape_idx
 			card.flip_card() # comment out for testing things
 			card.disable()
 		current_index=new_index
+		await tween.finished
+		click_closed.input_pickable = true
 		revealed[-1].enable()
