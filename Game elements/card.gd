@@ -15,6 +15,7 @@ var suit : Global.Suit = Global.Suit.HIDDEN
 var is_hidden : bool = true
 var children: Array[Card] = []
 var foundation_pile: Foundation_Pile
+var running_Tween: Tween = null
 
 func _ready() -> void:
 	is_hidden=true
@@ -31,10 +32,13 @@ func flip_card()->void:
 		is_hidden=false
 		enable() #TODO: might be a problem for stockpile
 	var tween = create_tween()
+	running_Tween = tween
 	tween.set_ease(Tween.EASE_IN_OUT)
 	tween.tween_property(sprite, "scale:x", 0, 0.5)
 	tween.tween_property(sprite, "frame_coords", new_frame,0)
 	tween.tween_property(sprite, "scale:x", 1,0.5)
+	await tween.finished
+	running_Tween = null
 
 #TODO: change so clickboxes imported @onready and not every time.
 func enable()->void:
@@ -66,8 +70,11 @@ func reset_clickbox():
 func return_to_place(time=0.5)->void:
 	assert(in_hand==false,"Cannot return a card when its in-hand!")
 	var tween_drop = create_tween()
+	running_Tween = tween_drop
 	tween_drop.set_ease(Tween.EASE_IN_OUT)
 	tween_drop.tween_property($".","position",current_position,time)
+	await tween_drop.finished
+	running_Tween = null
 
 func get_parent_area()->Area2D:
 	if parent == null:
@@ -103,7 +110,7 @@ func _on_click_box_input_event(viewport: Node, event: InputEvent, shape_idx: int
 		if parent:
 			parent.move_to_front()
 		set_process(true)
-	if event.is_action_pressed("Right Click"):
+	if event.is_action_pressed("Right Click") and not running_Tween:
 		if foundation_pile and foundation_pile.can_add_card(self):
 			move_to(foundation_pile)
 
