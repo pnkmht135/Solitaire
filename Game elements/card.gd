@@ -2,6 +2,7 @@ class_name Card
 extends Node2D
 
 # Note: card Clickbox disabled on default.
+var game: Game
 @onready var click_box: Area2D = $Click_Box
 @onready var collision_shape_2d: CollisionShape2D = $Click_Box/CollisionShape2D
 @onready var sprite: Sprite2D = %sprite
@@ -113,6 +114,11 @@ func _on_click_box_input_event(viewport: Node, event: InputEvent, shape_idx: int
 	if event.is_action_pressed("Right Click") and not running_Tween:
 		if foundation_pile and foundation_pile.can_add_card(self):
 			move_to(foundation_pile)
+			return
+		for tableau in game.Tablueas:
+			if tableau.can_add_card(self):
+				move_to(tableau)
+				return
 
 func party(tween: Tween, distance):
 	disable()

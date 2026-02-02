@@ -15,31 +15,42 @@ extends Node2D
 @onready var diamond_pile: Foundation_Pile = $Diamond_Pile
 @onready var spade_pile: Foundation_Pile = $Spade_Pile
 @onready var clover_pile: Foundation_Pile = $Clover_Pile
-var Foundation_Piles: Array[Foundation_Pile]
+
+var Tablueas : Array[Tableau]
+var Foundation_Piles : Array[Foundation_Pile]
 var Deck : Array[Card]
 
 func _ready() -> void:
 	# Generate deck of cards
 	var suits: Array[Global.Suit] =[Global.Suit.HEART,Global.Suit.DIAMOND,Global.Suit.SPADE,Global.Suit.CLOVER]
 	Foundation_Piles=[heart_pile,spade_pile,diamond_pile,clover_pile]
+	Tablueas=[
+		tableau_1,
+		tableau_2,
+		tableau_3,
+		tableau_4,
+		tableau_5,
+		tableau_6,
+		tableau_7
+	]
 	for suit in suits:
 		for i in range(0,13):
-			var card= CARD.instantiate()
-			card.suit=suit
+			var card = CARD.instantiate()
+			card.suit = suit
 			card.foundation_pile=Foundation_Piles[suit]
-			card.num=i
+			card.num = i
+			card.game = self
 			Deck.append(card)
 			add_child(card)
 	Deck.shuffle()
 	# Distribute the shuffled deck among table elements
-	tableau_1.initiate(Deck.slice(0,1))
-	tableau_2.initiate(Deck.slice(1,3))
-	tableau_3.initiate(Deck.slice(3,6))
-	tableau_4.initiate(Deck.slice(6,10))
-	tableau_5.initiate(Deck.slice(10,15))
-	tableau_6.initiate(Deck.slice(15,21))
-	tableau_7.initiate(Deck.slice(21,28))
-	stockpile.initiate(Deck.slice(28,53))
+	var index = 0
+	var counter = 1
+	for tableau in Tablueas:
+		tableau.initiate(Deck.slice(index,index+counter))
+		index+=counter
+		counter+=1
+	stockpile.initiate(Deck.slice(index,53))
 		
 func are_Foundation_Piles_Full()->bool:
 	for pile in Foundation_Piles:
