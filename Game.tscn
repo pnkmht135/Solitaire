@@ -10,6 +10,9 @@
 script = ExtResource("1_xkndl")
 CARD = ExtResource("2_u44n3")
 
+[node name="Stockpile" parent="." instance=ExtResource("4_sb48q")]
+position = Vector2(200, 100)
+
 [node name="Heart_Pile" parent="." node_paths=PackedStringArray("game") instance=ExtResource("5_t88pq")]
 position = Vector2(600, 100)
 game = NodePath("..")
@@ -56,6 +59,3 @@ position = Vector2(800, 300)
 [node name="Tableau7" parent="." instance=ExtResource("2_xkndl")]
 unique_name_in_owner = true
 position = Vector2(900, 300)
-
-[node name="Stockpile" parent="." instance=ExtResource("4_sb48q")]
-position = Vector2(200, 100)
