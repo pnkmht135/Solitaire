@@ -41,6 +41,7 @@ func remove_card(card:Card)->void:
 		cards_stack[-1].enable()
 
 func can_add_card(card:Card)->bool:
-	if card.suit == suit and card.num == num_cards:
+	#if card.suit == suit and card.num == num_cards:
+	if card.suit == suit and card.num == num_cards and card.find_children("*","Card",false,false).is_empty():
 		return true
 	return false

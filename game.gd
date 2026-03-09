@@ -42,7 +42,7 @@ func _ready() -> void:
 			card.game = self
 			Deck.append(card)
 			add_child(card)
-	Deck.shuffle()
+	#Deck.shuffle()
 	# Distribute the shuffled deck among table elements
 	var index = 0
 	var counter = 1

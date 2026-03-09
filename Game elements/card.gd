@@ -112,7 +112,7 @@ func _on_click_box_input_event(viewport: Node, event: InputEvent, shape_idx: int
 			parent.move_to_front()
 		set_process(true)
 	if event.is_action_pressed("Right Click") and not running_Tween:
-		if foundation_pile and find_children("*","Card",false,false).is_empty() and foundation_pile.can_add_card(self):
+		if foundation_pile and foundation_pile.can_add_card(self):
 			move_to(foundation_pile)
 			return
 		for tableau in game.Tablueas:
